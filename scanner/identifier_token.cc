@@ -8,6 +8,8 @@ namespace truplc {
 IdentifierToken::IdentifierToken(const std::string& attribute)
     : Token(TokenType::kIdentifier), attribute_(attribute) {}
 
+IdentifierToken::~IdentifierToken() {}
+
 const std::string& IdentifierToken::GetAttribute() const {
   return attribute_;
 }

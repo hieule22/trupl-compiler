@@ -17,11 +17,13 @@ class IdentifierToken : public Token {
   // defaults to empty string.
   explicit IdentifierToken(const std::string& attribute = "");
 
+  ~IdentifierToken() override;
+
   // Returns the string literal representing this identifier token.
   const std::string& GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be of the form kIdentifier:StringLiteral.
+  // Output will be of the form "kIdentifier":<StringLiteral>.
   std::string DebugString() const override;
 
  private:
