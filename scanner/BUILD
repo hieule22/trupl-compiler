@@ -94,3 +94,19 @@ cc_test(
        "//third_party/gtest:gtest_main",
   ],
 )
+
+cc_library(
+  name = "number_token",
+  srcs = ["number_token.cc"],
+  hdrs = ["number_token.h"],
+  deps = [":token"],
+)
+
+cc_test(
+  name = "number_token_test",
+  srcs = ["number_token_test.cc"],
+  deps = [
+       ":number_token",
+       "//third_party/gtest:gtest_main",
+  ],
+)
