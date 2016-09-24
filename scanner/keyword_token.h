@@ -1,10 +1,11 @@
-// Token class for keywords from TruPL which consist of the following:
-// program, procedure, int, bool, begin, end,
+// Token class for keywords from TruPL.
 // if, then, else, while, loop. print, not.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_KEYWORD_TOKEN_H__
 #define TRUPLC_SCANNER_KEYWORD_TOKEN_H__
+
+#include <string>
 
 #include "scanner/token.h"
 
@@ -12,19 +13,19 @@ namespace truplc {
 
 // Attributes for keyword tokens from TruPL.
 enum class KeywordAttribute : int {
-    kProgram     = 100,
-    kProcedure   = 101,
-    kInt         = 102,
-    kBool        = 103,
-    kBegin       = 104,
-    kEnd         = 105,
-    kIf          = 106,
-    kThen        = 107,
-    kElse        = 108,
-    kWhile       = 109,
-    kLoop        = 110,
-    kPrint       = 111,
-    kNot         = 112,
+    kProgram     = 100,  // program
+    kProcedure   = 101,  // procedure
+    kInt         = 102,  // int
+    kBool        = 103,  // bool
+    kBegin       = 104,  // begin
+    kEnd         = 105,  // end
+    kIf          = 106,  // if
+    kThen        = 107,  // then
+    kElse        = 108,  // else
+    kWhile       = 109,  // while
+    kLoop        = 110,  // loop
+    kPrint       = 111,  // print
+    kNot         = 112,  // not
     kUnspecified = 199,
 };
 
@@ -39,7 +40,7 @@ class KeywordToken : public Token {
   KeywordAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // The form of the output is kKeyword:KeywordAttribute.
+  // Output will be in the form kKeyword:KeywordAttribute.
   std::string DebugString() const override;
 
  private:

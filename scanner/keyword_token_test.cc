@@ -1,4 +1,4 @@
-// Test class for KeywordToken class.
+// Unit tests for KeywordToken class.
 // Copyright 2016 Hieu Le.
 
 #include "scanner/keyword_token.h"
@@ -11,7 +11,7 @@
 namespace truplc {
 namespace {
 
-TEST(KeywordToken, BaseConstructor) {
+TEST(KeywordToken, GetTokenType) {
   const KeywordToken token(KeywordAttribute::kWhile);
   EXPECT_EQ(token.GetTokenType(), TokenType::kKeyword);
 }
@@ -27,7 +27,7 @@ TEST(KeywordToken, GetAttribute) {
 
 TEST(KeywordToken, DebugString) {
   const std::string prefix = "kKeyword:";
-  std::vector<std::pair<KeywordAttribute, std::string>> attribute_debug_str =
+  std::vector<std::pair<KeywordAttribute, std::string>> attributes =
       {{KeywordAttribute::kProgram,     prefix + "kProgram"},
        {KeywordAttribute::kProcedure,   prefix + "kProcedure"},
        {KeywordAttribute::kInt,         prefix + "kInt"},
@@ -44,7 +44,7 @@ TEST(KeywordToken, DebugString) {
        {KeywordAttribute::kUnspecified, prefix + "kUnspecified"}
       };
 
-  for (const auto& attribute : attribute_debug_str) {
+  for (const auto& attribute : attributes) {
     KeywordToken token(attribute.first);
     EXPECT_EQ(token.DebugString(), attribute.second);
   }
