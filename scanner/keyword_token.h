@@ -33,7 +33,7 @@ class KeywordToken : public Token {
   // Constructs a keyword token from specified keyword attribute.
   // If no attribute is provided, defaults to unspecified.
   explicit KeywordToken(
-      KeywordAttribute Attributes = KeywordAttribute::kUnspecified);
+      KeywordAttribute attribute = KeywordAttribute::kUnspecified);
 
   // Returns the attribute of this keyword token.
   KeywordAttribute GetAttribute() const;
