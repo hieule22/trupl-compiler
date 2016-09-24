@@ -11,6 +11,11 @@
 namespace truplc {
 namespace {
 
+TEST(KeywordToken, BaseConstructor) {
+  const KeywordToken token(KeywordAttribute::kWhile);
+  EXPECT_EQ(token.GetTokenType(), TokenType::kKeyword);
+}
+
 TEST(KeywordToken, GetAttribute) {
   const KeywordToken default_token;
   EXPECT_EQ(default_token.GetAttribute(), KeywordAttribute::kUnspecified);
