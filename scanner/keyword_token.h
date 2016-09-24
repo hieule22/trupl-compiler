@@ -1,5 +1,4 @@
 // Token class for keywords from TruPL.
-// if, then, else, while, loop. print, not.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_KEYWORD_TOKEN_H__
@@ -45,7 +44,7 @@ class KeywordToken : public Token {
 
  private:
   // The attribute of this keyword token.
-  KeywordAttribute attribute_;
+  const KeywordAttribute attribute_;
 };
 
 }  // namespace truplc

@@ -27,7 +27,7 @@ TEST(KeywordToken, GetAttribute) {
 
 TEST(KeywordToken, DebugString) {
   const std::string prefix = "kKeyword:";
-  std::vector<std::pair<KeywordAttribute, std::string>> attributes =
+  const std::vector<std::pair<KeywordAttribute, std::string>> attributes =
       {{KeywordAttribute::kProgram,     prefix + "kProgram"},
        {KeywordAttribute::kProcedure,   prefix + "kProcedure"},
        {KeywordAttribute::kInt,         prefix + "kInt"},

@@ -57,7 +57,7 @@ std::string KeywordToken::DebugString() const {
       return prefix + "kNot";
     }
     case KeywordAttribute::kUnspecified: {
-      return prefix + "kUnspecifed";
+      return prefix + "kUnspecified";
     }
     default: {
       assert(false);
