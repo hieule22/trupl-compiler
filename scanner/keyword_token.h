@@ -31,15 +31,17 @@ enum class KeywordAttribute : int {
 class KeywordToken : public Token {
  public:
   // Constructs a keyword token from specified keyword attribute.
-  // If no attribute is provided, defaults to unspecified.
+  // If no attribute is provided, defaults to kUnspecified.
   explicit KeywordToken(
       KeywordAttribute attribute = KeywordAttribute::kUnspecified);
+
+  ~KeywordToken() override;
 
   // Returns the attribute of this keyword token.
   KeywordAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be in the form kKeyword:KeywordAttribute.
+  // Output will be of the form "kKeyword":<KeywordAttribute>.
   std::string DebugString() const override;
 
  private:

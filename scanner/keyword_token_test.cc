@@ -22,7 +22,7 @@ TEST(KeywordToken, GetAttribute) {
 
   const KeywordAttribute attribute = KeywordAttribute::kPrint;
   const KeywordToken specified_token(attribute);
-  EXPECT_EQ(default_token.GetAttribute(), attribute);
+  EXPECT_EQ(specified_token.GetAttribute(), attribute);
 }
 
 TEST(KeywordToken, DebugString) {

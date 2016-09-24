@@ -7,8 +7,10 @@
 
 namespace truplc {
 
-KeywordToken::KeywordToken(KeywordAttribute attribute)
+KeywordToken::KeywordToken(const KeywordAttribute attribute)
     : Token(TokenType::kKeyword), attribute_(attribute) {}
+
+KeywordToken::~KeywordToken() {}
 
 KeywordAttribute KeywordToken::GetAttribute() const {
   return attribute_;
@@ -16,6 +18,7 @@ KeywordAttribute KeywordToken::GetAttribute() const {
 
 std::string KeywordToken::DebugString() const {
   const std::string prefix = "kKeyword:";
+
   switch (attribute_) {
     case KeywordAttribute::kProgram: {
       return prefix + "kProgram";
