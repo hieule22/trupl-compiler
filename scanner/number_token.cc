@@ -8,6 +8,8 @@ namespace truplc {
 NumberToken::NumberToken(const std::string& attribute)
     : Token(TokenType::kNumber), attribute_(attribute) {}
 
+NumberToken::~NumberToken() {}
+
 const std::string& NumberToken::GetAttribute() const {
   return attribute_;
 }
