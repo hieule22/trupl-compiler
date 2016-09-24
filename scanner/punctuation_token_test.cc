@@ -28,13 +28,13 @@ TEST(PunctuationToken, GetAttribute) {
 TEST(PunctuationToken, DebugString) {
   const std::string prefix = "kPunctuation:";
   std::vector<std::pair<PunctuationAttribute, std::string>> attributes =
-      {{PunctuationAttribute::kSemicolon, prefix + "kSemicolon"},
-       {PunctuationAttribute::kColon, prefix + "kColon"},
-       {PunctuationAttribute::kComma, prefix + "kComma"},
-       {PunctuationAttribute::kAssignment, prefix + "kAssignment"},
-       {PunctuationAttribute::kOpenBracket, prefix + "kOpenBracket"},
+      {{PunctuationAttribute::kSemicolon,    prefix + "kSemicolon"},
+       {PunctuationAttribute::kColon,        prefix + "kColon"},
+       {PunctuationAttribute::kComma,        prefix + "kComma"},
+       {PunctuationAttribute::kAssignment,   prefix + "kAssignment"},
+       {PunctuationAttribute::kOpenBracket,  prefix + "kOpenBracket"},
        {PunctuationAttribute::kCloseBracket, prefix + "kCloseBracket"},
-       {PunctuationAttribute::kUnspecified, prefix + "kUnspecified"}
+       {PunctuationAttribute::kUnspecified,  prefix + "kUnspecified"}
       };
 
   for (const auto& attribute : attributes) {
