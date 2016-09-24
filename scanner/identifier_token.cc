@@ -1,0 +1,19 @@
+// Implementation of IdentifierToken class.
+// Copyright 2016 Hieu Le.
+
+#include "scanner/identifier_token.h"
+
+namespace truplc {
+
+IdentifierToken::IdentifierToken(const std::string& attribute)
+    : Token(TokenType::kIdentifier), attribute_(attribute) {}
+
+const std::string& IdentifierToken::GetAttribute() const {
+  return attribute_;
+}
+
+std::string IdentifierToken::DebugString() const {
+  return "kIdentifier:" + attribute_;
+}
+
+}  // namespace truplc

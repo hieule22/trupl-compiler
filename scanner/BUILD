@@ -110,3 +110,19 @@ cc_test(
        "//third_party/gtest:gtest_main",
   ],
 )
+
+cc_library(
+  name = "identifier_token",
+  srcs = ["identifier_token.cc"],
+  hdrs = ["identifier_token.h"],
+  deps = [":token"],
+)
+
+cc_test(
+  name = "identifier_token_test",
+  srcs = ["identifier_token_test.cc"],
+  deps = [
+       ":identifier_token",
+       "//third_party/gtest:gtest_main",
+  ],
+)
