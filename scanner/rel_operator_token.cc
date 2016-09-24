@@ -10,12 +10,15 @@ namespace truplc {
 RelOperatorToken::RelOperatorToken(const RelOperatorAttribute attribute)
     : Token(TokenType::kRelOperator), attribute_(attribute) {}
 
+RelOperatorToken::~RelOperatorToken() {}
+
 RelOperatorAttribute RelOperatorToken::GetAttribute() const {
   return attribute_;
 }
 
 std::string RelOperatorToken::DebugString() const {
   const std::string prefix = "kRelOperator:";
+
   switch (attribute_) {
     case RelOperatorAttribute::kEqual: {
       return prefix + "kEqual";

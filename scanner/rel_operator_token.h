@@ -1,4 +1,4 @@
-// Token class for relational operator from TruPL.
+// Token class for relational operators from TruPL.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_REL_OPERATOR_TOKEN_H__
@@ -28,11 +28,13 @@ class RelOperatorToken : public Token {
   explicit RelOperatorToken(
       RelOperatorAttribute attribute = RelOperatorAttribute::kUnspecified);
 
+  ~RelOperatorToken() override;
+
   // Returns the attribute of this relational operator token.
   RelOperatorAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be in the form kRelOperator:RelOperatorAttribute.
+  // Output will be of the form ""kRelOperator":<RelOperatorAttribute>.
   std::string DebugString() const override;
 
  private:
