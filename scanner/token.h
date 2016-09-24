@@ -24,7 +24,8 @@ enum class TokenType : int {
 class Token {
  public:
   // Constructs a token from given token type.
-  explicit Token(TokenType token_type);
+  // If no type is provided, default to unspecified.
+  explicit Token(TokenType token_type = TokenType::kUnspecified);
 
   // Virtual destructor for base class.
   virtual ~Token();
