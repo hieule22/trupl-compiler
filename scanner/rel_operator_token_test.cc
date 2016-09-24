@@ -27,15 +27,15 @@ TEST(RelOperatorToken, GetAttribute) {
 
 TEST(RelOperatorToken, DebugString) {
   const std::string prefix = "kRelOperator:";
-  const std::vector<std::pair<RelOperatorAttribute, std::string>> attributes =
-      {{RelOperatorAttribute::kEqual,          prefix + "kEqual"},
-       {RelOperatorAttribute::kNotEqual,       prefix + "kNotEqual"},
-       {RelOperatorAttribute::kGreaterThan,    prefix + "kGreaterThan"},
-       {RelOperatorAttribute::kGreaterOrEqual, prefix + "kGreaterOrEqual"},
-       {RelOperatorAttribute::kLessThan,       prefix + "kLessThan"},
-       {RelOperatorAttribute::kLessOrEqual,    prefix + "kLessOrEqual"},
-       {RelOperatorAttribute::kUnspecified,    prefix + "kUnspecified"}
-      };
+  const std::vector<std::pair<RelOperatorAttribute, std::string>> attributes = {
+    {RelOperatorAttribute::kEqual,          prefix + "kEqual"},
+    {RelOperatorAttribute::kNotEqual,       prefix + "kNotEqual"},
+    {RelOperatorAttribute::kGreaterThan,    prefix + "kGreaterThan"},
+    {RelOperatorAttribute::kGreaterOrEqual, prefix + "kGreaterOrEqual"},
+    {RelOperatorAttribute::kLessThan,       prefix + "kLessThan"},
+    {RelOperatorAttribute::kLessOrEqual,    prefix + "kLessOrEqual"},
+    {RelOperatorAttribute::kUnspecified,    prefix + "kUnspecified"}
+  };
 
   for (const auto& attribute : attributes) {
     RelOperatorToken token(attribute.first);
