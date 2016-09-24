@@ -28,19 +28,19 @@ TEST(KeywordToken, GetAttribute) {
 TEST(KeywordToken, DebugString) {
   const std::string prefix = "kKeyword:";
   std::vector<std::pair<KeywordAttribute, std::string>> attribute_debug_str =
-      {{KeywordAttribute::kProgram,    prefix + "kProgram"},
-       {KeywordAttribute::kProcedure,  prefix + "kProcedure"},
-       {KeywordAttribute::kInt,        prefix + "kInt"},
-       {KeywordAttribute::kBool,       prefix + "kBool"},
-       {KeywordAttribute::kBegin,      prefix + "kBegin"},
-       {KeywordAttribute::kEnd,        prefix + "kEnd"},
-       {KeywordAttribute::kIf,         prefix + "kIf"},
-       {KeywordAttribute::kThen,       prefix + "kThen"},
-       {KeywordAttribute::kElse,       prefix + "kElse"},
-       {KeywordAttribute::kWhile,      prefix + "kWhile"},
-       {KeywordAttribute::kLoop,       prefix + "kLoop"},
-       {KeywordAttribute::kPrint,      prefix + "kPrint"},
-       {KeywordAttribute::kNot,        prefix + "kNot"},
+      {{KeywordAttribute::kProgram,     prefix + "kProgram"},
+       {KeywordAttribute::kProcedure,   prefix + "kProcedure"},
+       {KeywordAttribute::kInt,         prefix + "kInt"},
+       {KeywordAttribute::kBool,        prefix + "kBool"},
+       {KeywordAttribute::kBegin,       prefix + "kBegin"},
+       {KeywordAttribute::kEnd,         prefix + "kEnd"},
+       {KeywordAttribute::kIf,          prefix + "kIf"},
+       {KeywordAttribute::kThen,        prefix + "kThen"},
+       {KeywordAttribute::kElse,        prefix + "kElse"},
+       {KeywordAttribute::kWhile,       prefix + "kWhile"},
+       {KeywordAttribute::kLoop,        prefix + "kLoop"},
+       {KeywordAttribute::kPrint,       prefix + "kPrint"},
+       {KeywordAttribute::kNot,         prefix + "kNot"},
        {KeywordAttribute::kUnspecified, prefix + "kUnspecified"}
       };
 
