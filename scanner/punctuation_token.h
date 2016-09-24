@@ -28,16 +28,16 @@ class PunctuationToken : public Token {
   explicit PunctuationToken(
       PunctuationAttribute attribute = PunctuationAttribute::kUnspecified);
 
-  // Returns the attribute of this keyword token.
+  // Returns the attribute of this punctuation token.
   PunctuationAttribute GetAttribute() const;
 
-  // Return a debug string consisting of the token type and its' attribute.
+  // Returns a debug string consisting of the token type and its' attribute.
   // Output will be in the form kPunctuation:PunctuationAttribute.
   std::string DebugString() const override;
 
  private:
   // The attribute of this punctuation token.
-  PunctuationAttribute attribute_;
+  const PunctuationAttribute attribute_;
 };
 
 }  // namespace truplc
