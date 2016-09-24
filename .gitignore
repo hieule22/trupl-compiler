@@ -1,2 +1,9 @@
+# Bazel build output
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-testlogs
+bazel-trupl-compiler
+
 # Emacs autosaves
 *~
