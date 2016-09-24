@@ -5,7 +5,9 @@
 
 namespace truplc {
 
-Token::Token(TokenType token_type) : type_(token_type) {}
+Token::Token(const TokenType token_type) : type_(token_type) {}
+
+Token::~Token() {}
 
 TokenType Token::GetTokenType() const {
   return type_;

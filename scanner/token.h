@@ -1,4 +1,4 @@
-// Base class for all token classes.
+// Base class for all tokens from TruPL.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_TOKEN_H__
@@ -24,7 +24,7 @@ enum class TokenType : int {
 class Token {
  public:
   // Constructs a token from given token type.
-  // If no type is provided, default to unspecified.
+  // If no type is provided, defaults to kUnspecified.
   explicit Token(TokenType token_type = TokenType::kUnspecified);
 
   // Virtual destructor for base class.
@@ -33,8 +33,8 @@ class Token {
   // Returns the type of this token.
   TokenType GetTokenType() const;
 
-  // Returns a string consisting of the token type and its' attribute.
-  // Intended for debugging. The form of the output is TOKEN_TYPE:Attribute.
+  // Returns a debug string consisting of the token type and its' attribute.
+  // Output should be of the form TOKEN_TYPE:Attribute.
   virtual std::string DebugString() const;
 
  private:
