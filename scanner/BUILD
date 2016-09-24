@@ -62,3 +62,19 @@ cc_test(
        "//third_party/gtest:gtest_main",
   ],
 )
+
+cc_library(
+  name = "add_operator_token",
+  srcs = ["add_operator_token.cc"],
+  hdrs = ["add_operator_token.h"],
+  deps = [":token"],
+)
+
+cc_test(
+  name = "add_operator_token_test",
+  srcs = ["add_operator_token_test.cc"],
+  deps = [
+       ":add_operator_token",
+       "//third_party/gtest:gtest_main",
+  ],
+)
