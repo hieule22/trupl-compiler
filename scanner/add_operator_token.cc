@@ -10,12 +10,15 @@ namespace truplc {
 AddOperatorToken::AddOperatorToken(const AddOperatorAttribute attribute)
     : Token(TokenType::kAddOperator), attribute_(attribute) {}
 
+AddOperatorToken::~AddOperatorToken() {}
+
 AddOperatorAttribute AddOperatorToken::GetAttribute() const {
   return attribute_;
 }
 
 std::string AddOperatorToken::DebugString() const {
   const std::string prefix = "kAddOperator:";
+
   switch (attribute_) {
     case AddOperatorAttribute::kAdd: {
       return prefix + "kAdd";

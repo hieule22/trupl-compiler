@@ -25,11 +25,13 @@ class AddOperatorToken : public Token {
   explicit AddOperatorToken(
       AddOperatorAttribute attribute = AddOperatorAttribute::kUnspecified);
 
+  ~AddOperatorToken() override;
+
   // Returns the attribute of this additive operator token.
   AddOperatorAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be in the form kAddOperator:AddOperatorAttribute.
+  // Output will be in the form "kAddOperator":<AddOperatorAttribute>.
   std::string DebugString() const override;
 
  private:
