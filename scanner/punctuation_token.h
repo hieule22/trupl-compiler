@@ -28,11 +28,13 @@ class PunctuationToken : public Token {
   explicit PunctuationToken(
       PunctuationAttribute attribute = PunctuationAttribute::kUnspecified);
 
+  ~PunctuationToken() override;
+
   // Returns the attribute of this punctuation token.
   PunctuationAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be in the form kPunctuation:PunctuationAttribute.
+  // Output will be in the form "kPunctuation":<PunctuationAttribute>.
   std::string DebugString() const override;
 
  private:

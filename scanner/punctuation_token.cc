@@ -10,12 +10,15 @@ namespace truplc {
 PunctuationToken::PunctuationToken(const PunctuationAttribute attribute)
     : Token(TokenType::kPunctuation), attribute_(attribute) {}
 
+PunctuationToken::~PunctuationToken() {}
+
 PunctuationAttribute PunctuationToken::GetAttribute() const {
   return attribute_;
 }
 
 std::string PunctuationToken::DebugString() const {
   const std::string prefix = "kPunctuation:";
+
   switch (attribute_) {
     case PunctuationAttribute::kSemicolon: {
       return prefix + "kSemicolon";
