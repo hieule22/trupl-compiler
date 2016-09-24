@@ -10,12 +10,15 @@ namespace truplc {
 MulOperatorToken::MulOperatorToken(const MulOperatorAttribute attribute)
     : Token(TokenType::kMulOperator), attribute_(attribute) {}
 
+MulOperatorToken::~MulOperatorToken() {}
+
 MulOperatorAttribute MulOperatorToken::GetAttribute() const {
   return attribute_;
 }
 
 std::string MulOperatorToken::DebugString() const {
   const std::string prefix = "kMulOperator:";
+
   switch (attribute_) {
     case MulOperatorAttribute::kMultiply: {
       return prefix + "kMultiply";
@@ -24,7 +27,7 @@ std::string MulOperatorToken::DebugString() const {
       return prefix + "kDivide";
     }
     case MulOperatorAttribute::kAnd: {
-      return prefix + "kAdd";
+      return prefix + "kAnd";
     }
     case MulOperatorAttribute::kUnspecified: {
       return prefix + "kUnspecified";

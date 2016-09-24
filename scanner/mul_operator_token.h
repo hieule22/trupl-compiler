@@ -10,6 +10,7 @@
 
 namespace truplc {
 
+// Attributes for multiplicative operators from TruPL.
 enum class MulOperatorAttribute : int {
     kMultiply    = 500,  // *
     kDivide      = 501,  // /
@@ -24,12 +25,14 @@ class MulOperatorToken : public Token {
   explicit MulOperatorToken(
       MulOperatorAttribute attribute = MulOperatorAttribute::kUnspecified);
 
+  ~MulOperatorToken() override;
+
   // Returns the attribute of this multiplicative operator token.
   MulOperatorAttribute GetAttribute() const;
 
   // Returns a debug string consisting of the token type and its' attribute.
-  // Output will be in the form kMulOperator:MulOperatorAttribute.
-  std::string DebugString() const;
+  // Output will be in the form "kMulOperator":<MulOperatorAttribute>.
+  std::string DebugString() const override;
  private:
   // The attribute of this multiplicative operator token.
   const MulOperatorAttribute attribute_;

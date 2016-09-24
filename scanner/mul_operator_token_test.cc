@@ -26,7 +26,7 @@ TEST(MulOperatorToken, GetAttribute) {
 }
 
 TEST(MulOperatorToken, DebugString) {
-  const std::string prefix = "kMulOperator";
+  const std::string prefix = "kMulOperator:";
   const std::vector<std::pair<MulOperatorAttribute, std::string>> attributes = {
     {MulOperatorAttribute::kMultiply,    prefix + "kMultiply"},
     {MulOperatorAttribute::kDivide,      prefix + "kDivide"},
