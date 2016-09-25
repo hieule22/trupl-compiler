@@ -33,6 +33,7 @@ class MulOperatorToken : public Token {
   // Returns a debug string consisting of the token type and its' attribute.
   // Output will be in the form "kMulOperator":<MulOperatorAttribute>.
   std::string DebugString() const override;
+  
  private:
   // The attribute of this multiplicative operator token.
   const MulOperatorAttribute attribute_;
