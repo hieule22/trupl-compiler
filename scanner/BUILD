@@ -136,7 +136,19 @@ cc_test(
 )
 
 cc_library(
-  name = "buffer",
-  srcs = ["buffer.cc"],
-  hdrs = ["buffer.h"],
+  name = "input_buffer",
+  srcs = ["input_buffer.cc"],
+  hdrs = ["input_buffer.h"],
+  deps = [],
+)
+
+cc_test(
+  name = "input_buffer_test",
+  srcs = ["input_buffer_test.cc"],
+  size = "small",
+  deps = [
+       ":input_buffer",
+       "//third_party/gtest:gtest_main",
+  ],
+  copts = ["-std=c++14"],
 )
