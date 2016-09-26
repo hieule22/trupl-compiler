@@ -8,8 +8,12 @@
 
 namespace truplc {
 
-// Symbol denoting EOF.
+// Not part of TruPL alphabet. Used only by the lexical analyzer to denote EOF.
 const char kEOFMarker     = '$';
+
+/* -------------------------------------------------------------------------- */
+// The TruPL input alphabet consists of all alphabetic ASCII characters, the
+// digits [0..9], and the following non-alphanumeric characters.
 
 // Symbol denoting the start of a comment line.
 const char kCommentMarker = '#';
@@ -22,6 +26,8 @@ const char kNewLine       = '\n';
 const char kNonAlphanum[] =
 {';', ':', '(', ')', ',', '=', '>', '<', '+', '-', '*', '/',
  kCommentMarker, kSpace, kTab, kNewLine};
+
+/* -------------------------------------------------------------------------- */
 
 class Buffer {
  public:
