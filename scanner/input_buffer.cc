@@ -30,12 +30,10 @@ void FillBuffer(std::istream* stream, std::list<char>* buffer,
 
 }  // namespace
 
-InputBuffer::InputBuffer(std::istream* stream) : stream_(std::move(stream)) {
+InputBuffer::InputBuffer(std::istream* stream) : stream_(stream) {
   // Remove any preceding whitespace or comment.
   RemoveSpaceAndComment();
 }
-
-InputBuffer::~InputBuffer() {}
 
 char InputBuffer::Next() {
   // Refill buffer if empty.

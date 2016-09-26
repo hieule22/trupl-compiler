@@ -21,10 +21,8 @@ static const char kNewLine       = '\n';
 class InputBuffer {
  public:
   // Initializes the buffer with specified input stream. The associated stream
-  // must outlast this InputBuffer instance.
+  // shall not be destroyed or modified during the lifetime of this InputBuffer.
   explicit InputBuffer(std::istream* stream);
-
-  virtual ~InputBuffer();
 
   // Removes and returns the next character from the buffer. Returns EOF if
   // there is no more character to read from the buffer.
