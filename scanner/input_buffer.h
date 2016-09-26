@@ -21,13 +21,13 @@ static const char kNewLine       = '\n';
 class InputBuffer {
  public:
   // Initializes the buffer with specified input stream. Ownership of the stream
-  // is acquired this InputBuffer object.
+  // is acquired by this InputBuffer object.
   explicit InputBuffer(std::unique_ptr<std::istream> stream);
 
   virtual ~InputBuffer();
 
-  // Removes and returns the next character from the buffer. Returns kEOFMarker
-  // if there is no more character to read from the buffer.
+  // Removes and returns the next character from the buffer. Returns EOF if
+  // there is no more character to read from the buffer.
   char NextChar();
 
   // Places a character back into the buffer.

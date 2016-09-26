@@ -43,8 +43,7 @@ char InputBuffer::Next() {
   if (buffer_.empty()) {
     FillBuffer(stream_.get(), &buffer_, kMaxBufferSize);
   }
-
-  // Signal end-of-file if buffer is still empty after refill attempt.
+  // Signal EOF if buffer is still empty after refill attempt.
   if (buffer_.empty()) {
     return kEOFMarker;
   }
@@ -64,7 +63,6 @@ void InputBuffer::SkipLine() {
 bool InputBuffer::RemoveSpaceAndComment() {
   char current = Next();
   bool hasWhitespaceOrComment = false;
-
   while (IsWhitespace(current) || current == kCommentMarker) {
     hasWhitespaceOrComment = true;
     while (IsWhitespace(current)) {  // Remove whitespaces.
@@ -77,12 +75,11 @@ bool InputBuffer::RemoveSpaceAndComment() {
   }
 
   // current now stores the nearest character that is neither a whitespace
-  // nor part of a comment. If current is not end-of-file, places it back
-  // at the front of buffer.
+  // nor part of a comment. If current is not EOF, places it back at the front
+  // of buffer.
   if (current != kEOFMarker) {
     UnreadChar(current);
   }
-
   return hasWhitespaceOrComment;
 }
 
