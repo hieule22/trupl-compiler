@@ -26,7 +26,7 @@ char FileBuffer::NextChar() {
   return buffer_->NextChar();
 }
 
-void FileBuffer::UnreadChar(char c) {
+void FileBuffer::UnreadChar(const char c) {
   return buffer_->UnreadChar(c);
 }
 

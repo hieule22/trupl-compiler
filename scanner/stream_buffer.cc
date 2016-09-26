@@ -94,7 +94,7 @@ char StreamBuffer::NextChar() {
   return Next();
 }
 
-void StreamBuffer::UnreadChar(char c) {
+void StreamBuffer::UnreadChar(const char c) {
   buffer_.push_front(c);
 }
 
