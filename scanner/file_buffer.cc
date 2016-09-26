@@ -5,25 +5,21 @@
 
 #include <utility>
 
+#include "scanner/input_buffer.h"
+
 namespace truplc {
 
 FileBuffer::FileBuffer(const std::string& filename) {
   // Open the file and fill the buffer.
   source_file_.open(filename);
   if (source_file_.fail()) {  // Fail to open source file.
-    std::cerr << "Error opening source file " << filename << std::endl;
-    BufferFatalError();
+    BufferFatalError("Error opening source file: " + filename);
   }
   input_buffer_ = std::make_unique<InputBuffer>(&source_file_);
 }
 
 FileBuffer::~FileBuffer() {
   source_file_.close();
-}
-
-void FileBuffer::BufferFatalError() const {
-  std::cerr << "EXITING on BUFFER FATAL ERROR" << std::endl;
-  exit(EXIT_FAILURE);
 }
 
 char FileBuffer::NextChar() {

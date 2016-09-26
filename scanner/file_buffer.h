@@ -8,11 +8,11 @@
 #include <string>
 #include <memory>
 
-#include "scanner/input_buffer.h"
+#include "scanner/buffer.h"
 
 namespace truplc {
 
-class FileBuffer {
+class FileBuffer : public Buffer {
  public:
   // Opens input program file and initializes the buffer.
   explicit FileBuffer(const std::string& filename);
@@ -20,22 +20,18 @@ class FileBuffer {
   // Closes the file and performs any needed clean-up.
   ~FileBuffer();
 
-  // Removes and returns the next character from the buffer.
-  char NextChar();
+  // Removes and returns the next character from the buffer.n
+  char NextChar() override;
 
-  // Places a character back at the front of the buffer.
-  void UnreadChar(char c);
+  // Places a character back into the buffer.
+  void UnreadChar(char c) override;
 
  private:
-  // Prints an error message and then exits. Intended when something
-  // catastrophic happens in the buffer.
-  void BufferFatalError() const;
-
   // The stream object for the source file.
   std::ifstream source_file_;
 
-  // The contained input buffer.
-  std::unique_ptr<InputBuffer> input_buffer_;
+  // The composed stream buffer.
+  std::unique_ptr<Buffer> input_buffer_;
 };
 
 }  // namespace truplc
