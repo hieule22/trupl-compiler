@@ -1,11 +1,11 @@
-// Implementation for Buffer class.
+// Implementation for FileBuffer class.
 // Copyright 2016 Hieu Le.
 
 #include "scanner/file_buffer.h"
 
 #include <utility>
 
-#include "scanner/input_buffer.h"
+#include "scanner/stream_buffer.h"
 
 namespace truplc {
 
@@ -15,7 +15,7 @@ FileBuffer::FileBuffer(const std::string& filename) {
   if (source_file_.fail()) {  // Fail to open source file.
     BufferFatalError("Error opening source file: " + filename);
   }
-  input_buffer_ = std::make_unique<InputBuffer>(&source_file_);
+  buffer_ = std::make_unique<StreamBuffer>(&source_file_);
 }
 
 FileBuffer::~FileBuffer() {
@@ -23,11 +23,11 @@ FileBuffer::~FileBuffer() {
 }
 
 char FileBuffer::NextChar() {
-  return input_buffer_->NextChar();
+  return buffer_->NextChar();
 }
 
 void FileBuffer::UnreadChar(char c) {
-  return input_buffer_->UnreadChar(c);
+  return buffer_->UnreadChar(c);
 }
 
 }  // namespace truplc

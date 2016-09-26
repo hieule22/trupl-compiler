@@ -1,35 +1,30 @@
 // Buffer class to read characters from an input stream.
 // Copyright 2016 Hieu Le.
 
-#ifndef TRUPLC_SCANNER_INPUT_BUFFER_H__
-#define TRUPLC_SCANNER_INPUT_BUFFER_H__
+#ifndef TRUPLC_SCANNER_STREAM_BUFFER_H__
+#define TRUPLC_SCANNER_STREAM_BUFFER_H__
 
 #include <iostream>
 #include <list>
 #include <memory>
 #include <string>
 
+#include "scanner/buffer.h"
+
 namespace truplc {
 
-// The dollar sign marks the end of file in the buffer.
-static const char kEOFMarker     = '$';
-static const char kCommentMarker = '#';
-static const char kSpace         = ' ';
-static const char kTab           = '\t';
-static const char kNewLine       = '\n';
-
-class InputBuffer {
+class StreamBuffer : public Buffer {
  public:
   // Initializes the buffer with specified input stream. The associated stream
-  // shall not be destroyed or modified during the lifetime of this InputBuffer.
-  explicit InputBuffer(std::istream* stream);
+  // shall not be destroyed or modified during the lifetime of this object.
+  explicit StreamBuffer(std::istream* stream);
 
   // Removes and returns the next character from the buffer. Returns EOF if
   // there is no more character to read from the buffer.
-  char NextChar();
+  char NextChar() override;
 
   // Places a character back into the buffer.
-  void UnreadChar(char c);
+  void UnreadChar(char c) override;
 
  private:
   // Capacity of internal character buffer.
@@ -56,4 +51,4 @@ class InputBuffer {
 
 }  // namespace truplc
 
-#endif  // TRUPLC_SCANNER_INPUT_BUFFER_H__
+#endif  // TRUPLC_SCANNER_STREAM_BUFFER_H__

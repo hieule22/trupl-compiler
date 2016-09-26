@@ -4,6 +4,7 @@
 #include "scanner/file_buffer.h"
 
 #include <iostream>
+#include <utility>
 
 #include "gtest/gtest.h"
 
@@ -12,11 +13,11 @@ namespace {
 
 TEST(FileBufferTest, NextCharBasic) {
   const std::string filename = "";
-  FileBuffer buffer(filename);
-  char current = buffer.NextChar();
+  std::unique_ptr<Buffer> buffer = std::make_unique<FileBuffer>(filename);
+  char current = buffer->NextChar();
   while (current != kEOFMarker) {
     std::cout << current;
-    current = buffer.NextChar();
+    current = buffer->NextChar();
   }
   std::cout << std::endl;
 }

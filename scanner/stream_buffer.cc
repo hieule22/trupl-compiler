@@ -1,7 +1,7 @@
-// Implementation for InputBuffer class.
+// Implementation for StreamBuffer class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/input_buffer.h"
+#include "scanner/stream_buffer.h"
 
 #include <sstream>
 #include <utility>
@@ -30,12 +30,12 @@ void FillBuffer(std::istream* stream, std::list<char>* buffer,
 
 }  // namespace
 
-InputBuffer::InputBuffer(std::istream* stream) : stream_(stream) {
+StreamBuffer::StreamBuffer(std::istream* stream) : stream_(stream) {
   // Remove any preceding whitespace or comment.
   RemoveSpaceAndComment();
 }
 
-char InputBuffer::Next() {
+char StreamBuffer::Next() {
   // Refill buffer if empty.
   if (buffer_.empty()) {
     FillBuffer(stream_, &buffer_, kMaxBufferSize);
@@ -47,17 +47,21 @@ char InputBuffer::Next() {
 
   char current = buffer_.front();
   buffer_.pop_front();
+  // Flags error if current does not belong to the TruPL alphabet.
+  if (!Validate(current)) {
+    BufferFatalError(std::string("Invalid character: ") + current);
+  }
   return current;
 }
 
-void InputBuffer::SkipLine() {
+void StreamBuffer::SkipLine() {
   char current = Next();
   while (current != kNewLine && current != kEOFMarker) {
     current = Next();
   }
 }
 
-bool InputBuffer::RemoveSpaceAndComment() {
+bool StreamBuffer::RemoveSpaceAndComment() {
   char current = Next();
   bool hasWhitespaceOrComment = false;
   while (IsWhitespace(current) || current == kCommentMarker) {
@@ -80,22 +84,17 @@ bool InputBuffer::RemoveSpaceAndComment() {
   return hasWhitespaceOrComment;
 }
 
-char InputBuffer::NextChar() {
-  // If there are tokens to process after the removed comments and whitespaces,
-  // return a default space delimiter. Return EOF otherwise.
+char StreamBuffer::NextChar() {
+  // Removes any subsequent region of whitespaces and comments and returns the
+  // default space delimiter.
   if (RemoveSpaceAndComment()) {
-    char current = Next();
-    if (current == kEOFMarker) {
-      return kEOFMarker;
-    }
-    UnreadChar(current);
     return kSpace;
   }
 
   return Next();
 }
 
-void InputBuffer::UnreadChar(char c) {
+void StreamBuffer::UnreadChar(char c) {
   buffer_.push_front(c);
 }
 

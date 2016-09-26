@@ -136,18 +136,26 @@ cc_test(
 )
 
 cc_library(
-  name = "input_buffer",
-  srcs = ["input_buffer.cc"],
-  hdrs = ["input_buffer.h"],
-  deps = [],
+  name = "buffer",
+  hdrs = ["buffer.h"],
+  srcs = ["buffer.cc"],
+)
+
+cc_library(
+  name = "stream_buffer",
+  srcs = ["stream_buffer.cc"],
+  hdrs = ["stream_buffer.h"],
+  deps = [
+       ":buffer",
+  ],
 )
 
 cc_test(
-  name = "input_buffer_test",
-  srcs = ["input_buffer_test.cc"],
+  name = "stream_buffer_test",
+  srcs = ["stream_buffer_test.cc"],
   size = "small",
   deps = [
-       ":input_buffer",
+       ":stream_buffer",
        "//third_party/gtest:gtest_main",
   ],
   copts = ["-std=c++14"],
@@ -158,7 +166,8 @@ cc_library(
   srcs = ["file_buffer.cc"],
   hdrs = ["file_buffer.h"],
   deps = [
-       ":input_buffer",
+       ":buffer",
+       ":stream_buffer",
   ],
   copts = ["-std=c++14"],
 )
@@ -170,4 +179,5 @@ cc_test(
        ":file_buffer",
        "//third_party/gtest:gtest_main",
   ],
+  copts = ["-std=c++14"],
 )

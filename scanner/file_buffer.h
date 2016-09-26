@@ -1,4 +1,4 @@
-// Buffer class to read characters from input file.
+// Buffer class to read characters from an input file.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_FILE_BUFFER_H__
@@ -31,7 +31,7 @@ class FileBuffer : public Buffer {
   std::ifstream source_file_;
 
   // The composed stream buffer.
-  std::unique_ptr<Buffer> input_buffer_;
+  std::unique_ptr<Buffer> buffer_;
 };
 
 }  // namespace truplc
