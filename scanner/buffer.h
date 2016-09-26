@@ -4,6 +4,8 @@
 #ifndef TRUPLC_SCANNER_BUFFER_H__
 #define TRUPLC_SCANNER_BUFFER_H__
 
+#include <string>
+
 namespace truplc {
 
 // Symbol denoting EOF.
@@ -31,6 +33,11 @@ class Buffer {
   // Places a character back into the buffer. Should not be called more than
   // once without an intervening call to NextChar().
   virtual void UnreadChar(char c) = 0;
+
+ protected:
+  // Prints an error message and then exits. Intended when something
+  // catastrophic happens in the buffer.
+  void BufferFatalError(const std::string& message) const;
 };
 
 }  // namespace truplc
