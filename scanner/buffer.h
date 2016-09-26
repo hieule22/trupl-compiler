@@ -19,6 +19,10 @@ const char kSpace         = ' ';
 const char kTab           = '\t';
 const char kNewLine       = '\n';
 
+const char kNonAlphanum[] =
+{';', ':', '(', ')', ',', '=', '>', '<', '+', '-', '*', '/',
+ kCommentMarker, kSpace, kTab, kNewLine};
+
 class Buffer {
  public:
   virtual ~Buffer() {}
@@ -38,6 +42,10 @@ class Buffer {
   // Prints an error message and then exits. Intended when something
   // catastrophic happens in the buffer.
   void BufferFatalError(const std::string& message) const;
+
+  // Checks if a specified character c belongs to the TruPL alphabet.
+  // Returns true if it does; false otherwise.
+  bool Validate(char c);
 };
 
 }  // namespace truplc
