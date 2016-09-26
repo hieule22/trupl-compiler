@@ -20,9 +20,9 @@ static const char kNewLine       = '\n';
 
 class InputBuffer {
  public:
-  // Initializes the buffer with specified input stream. Ownership of the stream
-  // is acquired by this InputBuffer object.
-  explicit InputBuffer(std::unique_ptr<std::istream> stream);
+  // Initializes the buffer with specified input stream. The associated stream
+  // must outlast this InputBuffer instance.
+  explicit InputBuffer(std::istream* stream);
 
   virtual ~InputBuffer();
 
@@ -50,7 +50,7 @@ class InputBuffer {
   bool RemoveSpaceAndComment();
 
   // Input stream to read characters from.
-  std::unique_ptr<std::istream> stream_;
+  std::istream* stream_;
 
   // Internal character buffer.
   std::list<char> buffer_;

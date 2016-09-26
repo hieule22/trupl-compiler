@@ -11,14 +11,10 @@
 namespace truplc {
 namespace {
 
-// Returns a mock input stream constructed from given string.
-std::unique_ptr<std::istream> CreateStream(const std::string& s) {
-  return std::make_unique<std::istringstream>(s);
-}
-
 TEST(InputBufferTest, NextCharBasic) {
   const std::string input = "FOO";
-  InputBuffer scanner(CreateStream(input));
+  std::istringstream ss(input);
+  InputBuffer scanner(&ss);
   for (char c : input) {
     EXPECT_EQ(scanner.NextChar(), c);
   }
@@ -27,7 +23,8 @@ TEST(InputBufferTest, NextCharBasic) {
 
 TEST(InputBufferTest, NextCharWithWhitespace) {
   const std::string input = "FOO BAR";
-  InputBuffer scanner(CreateStream(input));
+  std::istringstream ss(input);
+  InputBuffer scanner(&ss);
   for (char c : input) {
     EXPECT_EQ(scanner.NextChar(), c);
   }
@@ -35,7 +32,8 @@ TEST(InputBufferTest, NextCharWithWhitespace) {
 }
 
 TEST(InputBufferTest, NextCharWithMultipleWhitespaces) {
-  InputBuffer scanner(CreateStream("A  B"));
+  std::istringstream ss("A\n\tB");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
@@ -43,24 +41,28 @@ TEST(InputBufferTest, NextCharWithMultipleWhitespaces) {
 }
 
 TEST(InputBufferTest, NextCharWithPrecedingWhitespaces) {
-  InputBuffer scanner(CreateStream("\n\n\t A"));
+  std::istringstream ss("\n\n\t A");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithTrailingWhitespaces) {
-  InputBuffer scanner(CreateStream("A \n\t "));
+  std::istringstream ss("A \n\t ");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithOnlyWhitespaces) {
-  InputBuffer scanner(CreateStream("  \n\n\t\t  "));
+  std::istringstream ss("  \n\n\t\t  ");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithComments) {
-  InputBuffer scanner(CreateStream("F#ABC DEF GHI\nB"));
+  std::istringstream ss("F#ABC DEF GHI\nB");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'F');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
@@ -68,7 +70,8 @@ TEST(InputBufferTest, NextCharWithComments) {
 }
 
 TEST(InputBufferTest, NextCharWithMultilineComments) {
-  InputBuffer scanner(CreateStream("A#FOO QUOZ BAR \n#BAR\nB"));
+  std::istringstream ss("A#FOO QUOZ BAR \n#BAR\nB");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
@@ -76,24 +79,28 @@ TEST(InputBufferTest, NextCharWithMultilineComments) {
 }
 
 TEST(InputBufferTest, NextCharWithPrecedingComments) {
-  InputBuffer scanner(CreateStream("#THIS IS A COMMENT.\n  A"));
+  std::istringstream ss("#THIS IS A COMMENT.\n  A");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithTrailingComments) {
-  InputBuffer scanner(CreateStream("A#THIS IS A COMMENT."));
+  std::istringstream ss("A#THIS IS A COMMENT.");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTEST, NextCharWithOnlyComments) {
-  InputBuffer scanner(CreateStream("#THIS IS A COMMENT."));
+  std::istringstream ss("#THIS IS A COMMENT.");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithMixingWhitespaceAndComments) {
-  InputBuffer scanner(CreateStream("A #FOO BAR\n B"));
+  std::istringstream ss("A #FOO BAR\n B");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
@@ -101,12 +108,14 @@ TEST(InputBufferTest, NextCharWithMixingWhitespaceAndComments) {
 }
 
 TEST(InputBufferTest, NextCharWithEmptyInput) {
-  InputBuffer scanner(CreateStream(""));
+  std::istringstream ss("");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharAfterEndOfFile) {
-  InputBuffer scanner(CreateStream("A"));
+  std::istringstream ss("A");
+  InputBuffer scanner(&ss);
   EXPECT_EQ(scanner.NextChar(), 'A');
   for (int i = 0; i < 10; ++i) {
     EXPECT_EQ(scanner.NextChar(), kEOFMarker);
@@ -118,7 +127,7 @@ TEST(InputBufferTest, NextCharWithLongInputStream) {
   for (int i = 0; i < 20000; ++i) {
     ss << 'a';
   }
-  InputBuffer scanner(std::make_unique<std::stringstream>(std::move(ss)));
+  InputBuffer scanner(&ss);
   for (int i = 0; i < 20000; ++i) {
     EXPECT_EQ(scanner.NextChar(), 'a');
   }
