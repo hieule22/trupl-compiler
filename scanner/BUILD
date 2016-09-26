@@ -152,3 +152,22 @@ cc_test(
   ],
   copts = ["-std=c++14"],
 )
+
+cc_library(
+  name = "file_buffer",
+  srcs = ["file_buffer.cc"],
+  hdrs = ["file_buffer.h"],
+  deps = [
+       ":input_buffer",
+  ],
+  copts = ["-std=c++14"],
+)
+
+cc_test(
+  name = "file_buffer_test",
+  srcs = ["file_buffer_test.cc"],
+  deps = [
+       ":file_buffer",
+       "//third_party/gtest:gtest_main",
+  ],
+)
