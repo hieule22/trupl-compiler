@@ -16,7 +16,7 @@ void Buffer::BufferFatalError(const std::string& message) const {
   exit(EXIT_FAILURE);
 }
 
-bool Validate(const char c) {
+bool Buffer::Validate(const char c) {
   return std::islower(c) || std::isdigit(c) ||
       std::find(std::begin(kNonAlphanum), std::end(kNonAlphanum), c) !=
       std::end(kNonAlphanum);
