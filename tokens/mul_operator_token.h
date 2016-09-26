@@ -1,12 +1,12 @@
 // Token class for multiplicative operators from TruPL.
 // Copyright 2016 Hieu Le.
 
-#ifndef TRUPLC_SCANNER_MUL_OPERATOR_TOKEN_H__
-#define TRUPLC_SCANNER_MUL_OPERATOR_TOKEN_H__
+#ifndef TRUPLC_TOKENS_MUL_OPERATOR_TOKEN_H__
+#define TRUPLC_TOKENS_MUL_OPERATOR_TOKEN_H__
 
 #include <string>
 
-#include "scanner/token.h"
+#include "tokens/token.h"
 
 namespace truplc {
 
@@ -33,7 +33,7 @@ class MulOperatorToken : public Token {
   // Returns a debug string consisting of the token type and its' attribute.
   // Output will be in the form "kMulOperator":<MulOperatorAttribute>.
   std::string DebugString() const override;
-  
+
  private:
   // The attribute of this multiplicative operator token.
   const MulOperatorAttribute attribute_;
@@ -41,4 +41,4 @@ class MulOperatorToken : public Token {
 
 }  // namespace truplc
 
-#endif  // TRUPLC_SCANNER_MUL_OPERATOR_TOKEN_H__
+#endif  // TRUPLC_TOKENS_MUL_OPERATOR_TOKEN_H__

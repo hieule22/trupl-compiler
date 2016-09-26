@@ -1,7 +1,7 @@
 // Test class for token.h
 // Copyright 2016 Hieu Le.
 
-#include "scanner/token.h"
+#include "tokens/token.h"
 
 #include "gtest/gtest.h"
 

@@ -1,8 +1,8 @@
 // Base class for all tokens from TruPL.
 // Copyright 2016 Hieu Le.
 
-#ifndef TRUPLC_SCANNER_TOKEN_H__
-#define TRUPLC_SCANNER_TOKEN_H__
+#ifndef TRUPLC_TOKENS_TOKEN_H__
+#define TRUPLC_TOKENS_TOKEN_H__
 
 #include <string>
 
@@ -44,4 +44,4 @@ class Token {
 
 }  // namespace truplc
 
-#endif  // TRUPLC_SCANNER_TOKEN_H__
+#endif  // TRUPLC_TOKENS_TOKEN_H__

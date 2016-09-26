@@ -1,12 +1,12 @@
 // Token class for identifiers from TruPL.
 // Copyright 2016 Hieu Le.
 
-#ifndef TRUPLC_SCANNER_IDENTIFIER_TOKEN_H__
-#define TRUPLC_SCANNER_IDENTIFIER_TOKEN_H__
+#ifndef TRUPLC_TOKENS_IDENTIFIER_TOKEN_H__
+#define TRUPLC_TOKENS_IDENTIFIER_TOKEN_H__
 
 #include <string>
 
-#include "scanner/token.h"
+#include "tokens/token.h"
 
 namespace truplc {
 
@@ -33,4 +33,4 @@ class IdentifierToken : public Token {
 
 }  // namespace truplc
 
-#endif  // TRUPLC_SCANNER_IDENTIFIER_TOKEN_H__
+#endif  // TRUPLC_TOKENS_IDENTIFIER_TOKEN_H__

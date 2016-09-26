@@ -1,12 +1,12 @@
 // Token class for additive operators from TruPL.
 // Copyright 2016 Hieu Le.
 
-#ifndef TRUPLC_SCANNER_ADD_OPERATOR_TOKEN_H__
-#define TRUPLC_SCANNER_ADD_OPERATOR_TOKEN_H__
+#ifndef TRUPLC_TOKENS_ADD_OPERATOR_TOKEN_H__
+#define TRUPLC_TOKENS_ADD_OPERATOR_TOKEN_H__
 
 #include <string>
 
-#include "scanner/token.h"
+#include "tokens/token.h"
 
 namespace truplc {
 
@@ -41,4 +41,4 @@ class AddOperatorToken : public Token {
 
 }  // namespace truplc
 
-#endif  // TRUPLC_SCANNER_ADD_OPERATOR_TOKEN_H__
+#endif  // TRUPLC_TOKENS_ADD_OPERATOR_TOKEN_H__

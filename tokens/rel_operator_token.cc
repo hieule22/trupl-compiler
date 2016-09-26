@@ -1,7 +1,7 @@
 // Implementation of RelOperatorToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/rel_operator_token.h"
+#include "tokens/rel_operator_token.h"
 
 #include <cassert>
 

@@ -1,7 +1,7 @@
 // Implementation of PunctuationToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/punctuation_token.h"
+#include "tokens/punctuation_token.h"
 
 #include <cassert>
 

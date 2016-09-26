@@ -1,7 +1,7 @@
 // Implementation of Token class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/token.h"
+#include "tokens/token.h"
 
 namespace truplc {
 

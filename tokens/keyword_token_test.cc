@@ -1,7 +1,7 @@
 // Unit tests for KeywordToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/keyword_token.h"
+#include "tokens/keyword_token.h"
 
 #include <utility>
 #include <vector>

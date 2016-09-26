@@ -1,7 +1,7 @@
 // Unit tests for AddOperatorToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/add_operator_token.h"
+#include "tokens/add_operator_token.h"
 
 #include <utility>
 #include <vector>

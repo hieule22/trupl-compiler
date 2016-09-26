@@ -1,7 +1,7 @@
 // Unit tests for IdentifierToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/identifier_token.h"
+#include "tokens/identifier_token.h"
 
 #include "gtest/gtest.h"
 

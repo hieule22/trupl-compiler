@@ -1,7 +1,7 @@
 // Unit tests for RelOperatorToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/rel_operator_token.h"
+#include "tokens/rel_operator_token.h"
 
 #include <utility>
 #include <vector>

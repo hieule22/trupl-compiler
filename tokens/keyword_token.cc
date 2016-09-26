@@ -1,7 +1,7 @@
 // Implementation of KeywordToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/keyword_token.h"
+#include "tokens/keyword_token.h"
 
 #include <cassert>
 

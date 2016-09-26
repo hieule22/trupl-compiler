@@ -1,7 +1,7 @@
 // Implementation of NumberToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/number_token.h"
+#include "tokens/number_token.h"
 
 namespace truplc {
 

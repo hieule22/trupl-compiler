@@ -1,7 +1,7 @@
 // Unit tests for MulOperatorToken class.
 // Copyright 2016 Hieu Le.
 
-#include "scanner/mul_operator_token.h"
+#include "tokens/mul_operator_token.h"
 
 #include <utility>
 #include <vector>
