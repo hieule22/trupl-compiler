@@ -33,16 +33,10 @@ void FillBuffer(std::istream* stream, std::list<char>* buffer,
 InputBuffer::InputBuffer(std::unique_ptr<std::istream> stream)
     : stream_(std::move(stream)) {
   // Remove any preceding whitespace or comment.
-  Compress();
+  RemoveSpaceAndComment();
 }
 
 InputBuffer::~InputBuffer() {}
-
-void InputBuffer::BufferFatalError(const std::string& message) const {
-  std::cerr << message << std::endl;
-  std::cerr << "EXITING on BUFFER FATAL ERROR" << std::endl;
-  exit(EXIT_FAILURE);
-}
 
 char InputBuffer::Next() {
   // Refill buffer if empty.
@@ -50,52 +44,61 @@ char InputBuffer::Next() {
     FillBuffer(stream_.get(), &buffer_, kMaxBufferSize);
   }
 
-  // Error if buffer is still empty after refill attempt.
+  // Signal end-of-file if buffer is still empty after refill attempt.
   if (buffer_.empty()) {
-    BufferFatalError("Buffer underflow");
+    return kEOFMarker;
   }
 
-  char output = buffer_.front();
+  char current = buffer_.front();
   buffer_.pop_front();
-  return output;
+  return current;
 }
 
 void InputBuffer::SkipLine() {
   char current = Next();
-  while (current != kNewLine) {
+  while (current != kNewLine && current != kEOFMarker) {
     current = Next();
   }
 }
 
-void InputBuffer::Compress() {
+bool InputBuffer::RemoveSpaceAndComment() {
   char current = Next();
+  bool hasWhitespaceOrComment = false;
+
   while (IsWhitespace(current) || current == kCommentMarker) {
-    // Remove white spaces.
-    while (IsWhitespace(current)) {
+    hasWhitespaceOrComment = true;
+    while (IsWhitespace(current)) {  // Remove whitespaces.
       current = Next();
     }
-    // Remove comments.
-    if (current == kCommentMarker) {
+    if (current == kCommentMarker) {  // Remove comments.
       SkipLine();
       current = Next();
     }
   }
+
   // current now stores the nearest character that is neither a whitespace
-  // nor part of a comment. Places it back at the front of buffer_.
-  UnreadChar(current);
+  // nor part of a comment. If current is not end-of-file, places it back
+  // at the front of buffer.
+  if (current != kEOFMarker) {
+    UnreadChar(current);
+  }
+
+  return hasWhitespaceOrComment;
 }
 
 char InputBuffer::NextChar() {
-  char current = Next();
-
-  // All whitespaces and comments are compressed to a single space delimiter.
-  if (current == kCommentMarker || IsWhitespace(current)) {
+  // If there are tokens to process after the removed comments and whitespaces,
+  // return a default space delimiter. Return EOF otherwise.
+  if (RemoveSpaceAndComment()) {
+    char current = Next();
+    if (current == kEOFMarker) {
+      return kEOFMarker;
+    }
     UnreadChar(current);
-    Compress();
     return kSpace;
   }
 
-  return current;
+  return Next();
 }
 
 void InputBuffer::UnreadChar(char c) {

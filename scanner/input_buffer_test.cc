@@ -11,68 +11,106 @@
 namespace truplc {
 namespace {
 
+// Returns a mock input stream constructed from given string.
 std::unique_ptr<std::istream> CreateStream(const std::string& s) {
   return std::make_unique<std::istringstream>(s);
 }
 
 TEST(InputBufferTest, NextCharBasic) {
-  const std::string input = "Foo$";
+  const std::string input = "FOO";
   InputBuffer scanner(CreateStream(input));
   for (char c : input) {
     EXPECT_EQ(scanner.NextChar(), c);
   }
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithWhitespace) {
-  const std::string input = "Foo Bar$";
+  const std::string input = "FOO BAR";
   InputBuffer scanner(CreateStream(input));
   for (char c : input) {
     EXPECT_EQ(scanner.NextChar(), c);
   }
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithMultipleWhitespaces) {
-  {
-    InputBuffer scanner(CreateStream("F  $"));
-    EXPECT_EQ(scanner.NextChar(), 'F');
-    EXPECT_EQ(scanner.NextChar(), kSpace);
-  }
-  {
-    InputBuffer scanner(CreateStream("F\n\t $"));
-    EXPECT_EQ(scanner.NextChar(), 'F');
-    EXPECT_EQ(scanner.NextChar(), kSpace);
-  }
+  InputBuffer scanner(CreateStream("A  B"));
+  EXPECT_EQ(scanner.NextChar(), 'A');
+  EXPECT_EQ(scanner.NextChar(), kSpace);
+  EXPECT_EQ(scanner.NextChar(), 'B');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 TEST(InputBufferTest, NextCharWithPrecedingWhitespaces) {
-  InputBuffer scanner(CreateStream("\n\n\t H$"));
-  EXPECT_EQ(scanner.NextChar(), 'H');
+  InputBuffer scanner(CreateStream("\n\n\t A"));
+  EXPECT_EQ(scanner.NextChar(), 'A');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
-TEST(InputBufferTest, NextCharWithComment) {
-  InputBuffer scanner(CreateStream("F#abc bar quoz \nB$"));
+TEST(InputBufferTest, NextCharWithTrailingWhitespaces) {
+  InputBuffer scanner(CreateStream("A \n\t "));
+  EXPECT_EQ(scanner.NextChar(), 'A');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTest, NextCharWithOnlyWhitespaces) {
+  InputBuffer scanner(CreateStream("  \n\n\t\t  "));
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTest, NextCharWithComments) {
+  InputBuffer scanner(CreateStream("F#ABC DEF GHI\nB"));
   EXPECT_EQ(scanner.NextChar(), 'F');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
-TEST(InputBufferTest, NextCharWithMultilineComment) {
-  InputBuffer scanner(CreateStream("A#foo quoz bar \n#bar\nB"));
+TEST(InputBufferTest, NextCharWithMultilineComments) {
+  InputBuffer scanner(CreateStream("A#FOO QUOZ BAR \n#BAR\nB"));
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
-TEST(InputBufferTest, NextCharWithPrecedingComment) {
-  InputBuffer scanner(CreateStream("#This is a comment\n  A$"));
+TEST(InputBufferTest, NextCharWithPrecedingComments) {
+  InputBuffer scanner(CreateStream("#THIS IS A COMMENT.\n  A"));
   EXPECT_EQ(scanner.NextChar(), 'A');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
-TEST(InputBufferTest, NextCharWithMixingWhitespaceAndComment) {
-  InputBuffer scanner(CreateStream("A #foo bar\n B"));
+TEST(InputBufferTest, NextCharWithTrailingComments) {
+  InputBuffer scanner(CreateStream("A#THIS IS A COMMENT."));
+  EXPECT_EQ(scanner.NextChar(), 'A');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTEST, NextCharWithOnlyComments) {
+  InputBuffer scanner(CreateStream("#THIS IS A COMMENT."));
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTest, NextCharWithMixingWhitespaceAndComments) {
+  InputBuffer scanner(CreateStream("A #FOO BAR\n B"));
   EXPECT_EQ(scanner.NextChar(), 'A');
   EXPECT_EQ(scanner.NextChar(), kSpace);
   EXPECT_EQ(scanner.NextChar(), 'B');
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTest, NextCharWithEmptyInput) {
+  InputBuffer scanner(CreateStream(""));
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+}
+
+TEST(InputBufferTest, NextCharAfterEndOfFile) {
+  InputBuffer scanner(CreateStream("A"));
+  EXPECT_EQ(scanner.NextChar(), 'A');
+  for (int i = 0; i < 10; ++i) {
+    EXPECT_EQ(scanner.NextChar(), kEOFMarker);
+  }
 }
 
 TEST(InputBufferTest, NextCharWithLongInputStream) {
@@ -84,6 +122,7 @@ TEST(InputBufferTest, NextCharWithLongInputStream) {
   for (int i = 0; i < 20000; ++i) {
     EXPECT_EQ(scanner.NextChar(), 'a');
   }
+  EXPECT_EQ(scanner.NextChar(), kEOFMarker);
 }
 
 }  // namespace
