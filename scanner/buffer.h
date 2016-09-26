@@ -20,13 +20,12 @@ const char kNewLine       = '\n';
 class Buffer {
  public:
   virtual ~Buffer() {}
-  
-  // Removes and returns the next character from the buffer. Subclass seeking
-  // to override this method should remove any preceding regions of whitespaces
-  // and comments. Intervening / trailing regions of whitespaces and comments
-  // must be compressed into a single delimiting space.
-  // Should not crash when user attempts to read past the end of input and
-  // return an EOF marker instead.
+
+  // Removes and returns the next character from the buffer. Any preceding
+  // region of whitespaces and comments will be ignored. Any intervening or
+  // trailing region of whitespaces and comments will be compressed into a
+  // single delimiting space. The EOF marker is returned when user attempts to
+  // read past the end of input.
   virtual char NextChar() = 0;
 
   // Places a character back into the buffer. Should not be called more than
