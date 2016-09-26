@@ -22,8 +22,8 @@ inline bool IsWhitespace(char c) {
 
 // Fills buffer with characters from an input stream up to some specified limit.
 void FillBuffer(std::istream* stream, std::list<char>* buffer,
-                const int limit) {
-  for (int i = 0; i < limit && !IsEmpty(*stream); ++i) {
+                const size_t limit) {
+  for (size_t i = 0; i < limit && !IsEmpty(*stream); ++i) {
     buffer->push_back(stream->get());
   }
 }
@@ -38,7 +38,7 @@ InputBuffer::InputBuffer(std::unique_ptr<std::istream> stream)
 
 InputBuffer::~InputBuffer() {}
 
-void InputBuffer::BufferFatalError(const std::string& message) {
+void InputBuffer::BufferFatalError(const std::string& message) const {
   std::cerr << message << std::endl;
   std::cerr << "EXITING on BUFFER FATAL ERROR" << std::endl;
   exit(EXIT_FAILURE);
@@ -60,7 +60,7 @@ char InputBuffer::Next() {
   return output;
 }
 
-void InputBuffer::NextLine() {
+void InputBuffer::SkipLine() {
   char current = Next();
   while (current != kNewLine) {
     current = Next();
@@ -76,7 +76,7 @@ void InputBuffer::Compress() {
     }
     // Remove comments.
     if (current == kCommentMarker) {
-      NextLine();
+      SkipLine();
       current = Next();
     }
   }

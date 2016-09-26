@@ -34,13 +34,13 @@ class InputBuffer {
 
  private:
   // Capacity of internal character buffer.
-  static const int kMaxBufferSize = 1024;
+  static const size_t kMaxBufferSize = 1024;
 
   // Gets the next character and performs any necessary buffer refill.
   char Next();
 
   // Skips the current line of characters.
-  void NextLine();
+  void SkipLine();
 
   // Skips all whitespaces and comments and points front of buffer to the
   // nearest character that is not a whitespace or part of a comment.
@@ -48,7 +48,7 @@ class InputBuffer {
 
   // Prints an error message and exits current process. Intended for
   // catastrophic events happening in the buffer.
-  void BufferFatalError(const std::string& message);
+  void BufferFatalError(const std::string& message) const;
 
   // Input stream to read characters from.
   std::unique_ptr<std::istream> stream_;
