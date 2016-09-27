@@ -49,6 +49,7 @@ class StreamBuffer : public Buffer {
   std::list<char> buffer_;
 
   // Flags indicating if all the characters have been read or not.
+  // TODO(hieule): Remove this.
   bool exhausted;
 };
 
