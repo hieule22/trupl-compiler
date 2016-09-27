@@ -9,7 +9,9 @@ namespace truplc {
 namespace {
 
 TEST(FileBufferDeathTest, ConstructWithIllegalFilename) {
-  EXPECT_DEATH({ FileBuffer buffer("Foo"); }, "");
+  ASSERT_EXIT({ FileBuffer buffer("Foo"); },
+              ::testing::ExitedWithCode(EXIT_FAILURE),
+              "c*Error opening source file: Fooc*");
 }
 
 }  // namespace

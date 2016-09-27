@@ -73,24 +73,6 @@ TEST(StreamBufferTest, NextCharWithLongInputStream) {
   TestNextChar(input, expected);
 }
 
-TEST(StreamBufferDeathTest, NextCharIllegalInput) {
-  {
-    std::istringstream ss("FOO");
-    StreamBuffer buffer(&ss);
-    EXPECT_DEATH(buffer.NextChar(), "");
-  }
-  {
-    std::istringstream ss("%^&");
-    StreamBuffer buffer(&ss);
-    EXPECT_DEATH(buffer.NextChar(), "");
-  }
-  {
-    std::istringstream ss("$");
-    StreamBuffer buffer(&ss);
-    EXPECT_DEATH(buffer.NextChar(), "");
-  }
-}
-
 TEST(StreamBufferTest, UnreadCharBasic) {
   std::istringstream ss("a");
   StreamBuffer buffer(&ss);
@@ -101,14 +83,40 @@ TEST(StreamBufferTest, UnreadCharBasic) {
   EXPECT_EQ(buffer.NextChar(), result);
 }
 
-TEST(StreamBuffer, UnreadIllegalChar) {
+TEST(StreamBufferDeathTest, NextCharIllegalInput) {
+  {
+    std::istringstream ss("FOO");
+    StreamBuffer buffer(&ss);
+    ASSERT_EXIT(buffer.NextChar(),
+                 ::testing::ExitedWithCode(EXIT_FAILURE),
+                 "c*Invalid character: Fc*");
+  }
+  {
+    std::istringstream ss("%^&");
+    StreamBuffer buffer(&ss);
+    ASSERT_EXIT(buffer.NextChar(),
+                ::testing::ExitedWithCode(EXIT_FAILURE),
+                "c*Invalid character: %c*");
+  }
+  {
+    std::istringstream ss("$");
+    StreamBuffer buffer(&ss);
+    ASSERT_EXIT(buffer.NextChar(),
+                ::testing::ExitedWithCode(EXIT_FAILURE),
+                "c*Invalid character: \\$c*");
+  }
+}
+
+TEST(StreamBufferDeathTest, UnreadIllegalChar) {
   std::istringstream ss("");
   StreamBuffer buffer(&ss);
   EXPECT_EQ(buffer.NextChar(), kEOFMarker);
   buffer.UnreadChar('a');
   EXPECT_EQ(buffer.NextChar(), 'a');
   buffer.UnreadChar('$');
-  EXPECT_DEATH(buffer.NextChar(), "");
+  ASSERT_EXIT(buffer.NextChar(),
+              ::testing::ExitedWithCode(EXIT_FAILURE),
+              "c*Invalid character: \\$c*");
 }
 
 }  // namespace
