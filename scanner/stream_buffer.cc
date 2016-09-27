@@ -10,8 +10,8 @@ namespace truplc {
 namespace {
 
 // Checks if given input stream is empty.
-inline bool IsEmpty(std::istream& stream) {
-  return stream.peek() == EOF;
+inline bool IsEmptyStream(std::istream* stream) {
+  return stream->peek() == EOF;
 }
 
 // Checks if given character represents a whitespace symbol. Whitespaces consist
@@ -23,14 +23,15 @@ inline bool IsWhitespace(char c) {
 // Fills buffer with characters from an input stream up to some specified limit.
 void FillBuffer(std::istream* stream, std::list<char>* buffer,
                 const size_t limit) {
-  for (size_t i = 0; i < limit && !IsEmpty(*stream); ++i) {
+  for (size_t i = 0; i < limit && !IsEmptyStream(stream); ++i) {
     buffer->push_back(stream->get());
   }
 }
 
 }  // namespace
 
-StreamBuffer::StreamBuffer(std::istream* stream) : stream_(stream) {
+StreamBuffer::StreamBuffer(std::istream* stream)
+    : stream_(stream), exhausted(false) {
   // Remove any preceding whitespace or comment.
   RemoveSpaceAndComment();
 }
@@ -42,21 +43,18 @@ char StreamBuffer::Next() {
   }
   // Signal EOF if buffer is still empty after refill attempt.
   if (buffer_.empty()) {
+    exhausted = true;
     return kEOFMarker;
   }
 
   char current = buffer_.front();
   buffer_.pop_front();
-  // Flags error if current does not belong to the TruPL alphabet.
-  if (!Validate(current)) {
-    BufferFatalError(std::string("Invalid character: ") + current);
-  }
   return current;
 }
 
 void StreamBuffer::SkipLine() {
   char current = Next();
-  while (current != kNewLine && current != kEOFMarker) {
+  while (current != kNewLine && !exhausted) {
     current = Next();
   }
 }
@@ -78,7 +76,7 @@ bool StreamBuffer::RemoveSpaceAndComment() {
   // current now stores the nearest character that is neither a whitespace
   // nor part of a comment. If current is not EOF, places it back at the front
   // of buffer.
-  if (current != kEOFMarker) {
+  if (!exhausted) {
     UnreadChar(current);
   }
   return hasWhitespaceOrComment;
@@ -91,10 +89,18 @@ char StreamBuffer::NextChar() {
     return kSpace;
   }
 
-  return Next();
+  char current = Next();
+  // Flags error if current does not belong to the TruPL alphabet.
+  if (!Validate(current)) {
+    if (!(current == kEOFMarker && exhausted)) {
+      BufferFatalError(std::string("Invalid character: ") + current);
+    }
+  }
+  return current;
 }
 
 void StreamBuffer::UnreadChar(const char c) {
+  exhausted = false;
   buffer_.push_front(c);
 }
 

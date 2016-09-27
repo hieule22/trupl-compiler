@@ -17,9 +17,9 @@ namespace {
 void TestNextChar(const std::string& input,
                   const std::vector<char>& expected) {
   std::istringstream ss(input);
-  std::unique_ptr<Buffer> buffer = std::make_unique<StreamBuffer>(&ss);
+  StreamBuffer buffer(&ss);
   for (const char c : expected) {
-    EXPECT_EQ(buffer->NextChar(), c);
+    EXPECT_EQ(buffer.NextChar(), c);
   }
 }
 
@@ -30,6 +30,8 @@ TEST(StreamBufferTest, NextCharBasic) {
   TestNextChar("if(a )", {'i', 'f', '(', 'a', kSpace, ')', kEOFMarker});
   TestNextChar(";:(),=<>+-",
                {';', ':', '(', ')', ',', '=', '<', '>', '+', '-', kEOFMarker});
+  TestNextChar("", {kEOFMarker});
+  TestNextChar("a", {'a', kEOFMarker, kEOFMarker, kEOFMarker});
 }
 
 TEST(StreamBufferTest, NextCharWithWhitespace) {
@@ -48,6 +50,9 @@ TEST(StreamBufferTest, NextCharWithComments) {
   TestNextChar("#this is a comment\na", {'a', kEOFMarker});
   TestNextChar("a#this is a comment", {'a', kSpace, kEOFMarker});
   TestNextChar("#this is a comment", {kEOFMarker});
+  TestNextChar("abc #!@#$%^&*\n", {'a', 'b', 'c', kSpace, kEOFMarker});
+  TestNextChar("a#$$$\nb", {'a', kSpace, 'b', kEOFMarker});
+  TestNextChar("#$$$", {kEOFMarker});
 }
 
 
@@ -56,14 +61,6 @@ TEST(StreamBufferTest, NextCharWithMixingWhitespaceAndComments) {
   TestNextChar("#foo bar\n\n\t  a b", {'a', kSpace, 'b', kEOFMarker});
   TestNextChar(" a #foo bar \n \t   b #foo\n\t c#foo bar",
                {'a', kSpace, 'b', kSpace, 'c', kSpace, kEOFMarker});
-}
-
-TEST(StreamBufferTest, NextCharWithEmptyStream) {
-  TestNextChar("", {kEOFMarker});
-}
-
-TEST(StreamBufferTest, NextCharAfterEndOfFile) {
-  TestNextChar("a", {'a', kEOFMarker, kEOFMarker, kEOFMarker});
 }
 
 TEST(StreamBufferTest, NextCharWithLongInputStream) {
@@ -76,14 +73,42 @@ TEST(StreamBufferTest, NextCharWithLongInputStream) {
   TestNextChar(input, expected);
 }
 
+TEST(StreamBufferDeathTest, NextCharIllegalInput) {
+  {
+    std::istringstream ss("FOO");
+    StreamBuffer buffer(&ss);
+    EXPECT_DEATH(buffer.NextChar(), "");
+  }
+  {
+    std::istringstream ss("%^&");
+    StreamBuffer buffer(&ss);
+    EXPECT_DEATH(buffer.NextChar(), "");
+  }
+  {
+    std::istringstream ss("$");
+    StreamBuffer buffer(&ss);
+    EXPECT_DEATH(buffer.NextChar(), "");
+  }
+}
+
 TEST(StreamBufferTest, UnreadCharBasic) {
   std::istringstream ss("a");
-  std::unique_ptr<Buffer> buffer = std::make_unique<StreamBuffer>(&ss);
-  char result = buffer->NextChar();
+  StreamBuffer buffer(&ss);
+  char result = buffer.NextChar();
   EXPECT_EQ(result, 'a');
-  EXPECT_EQ(buffer->NextChar(), kEOFMarker);
-  buffer->UnreadChar(result);
-  EXPECT_EQ(buffer->NextChar(), result);
+  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
+  buffer.UnreadChar(result);
+  EXPECT_EQ(buffer.NextChar(), result);
+}
+
+TEST(StreamBuffer, UnreadIllegalChar) {
+  std::istringstream ss("");
+  StreamBuffer buffer(&ss);
+  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
+  buffer.UnreadChar('a');
+  EXPECT_EQ(buffer.NextChar(), 'a');
+  buffer.UnreadChar('$');
+  EXPECT_DEATH(buffer.NextChar(), "");
 }
 
 }  // namespace

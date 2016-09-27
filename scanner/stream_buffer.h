@@ -47,6 +47,9 @@ class StreamBuffer : public Buffer {
 
   // Internal character buffer.
   std::list<char> buffer_;
+
+  // Flags indicating if all the characters have been read or not.
+  bool exhausted;
 };
 
 }  // namespace truplc
