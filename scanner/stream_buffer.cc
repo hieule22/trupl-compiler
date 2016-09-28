@@ -77,7 +77,7 @@ bool StreamBuffer::RemoveSpaceAndComment() {
   // nor part of a comment. If current is not EOF, places it back at the front
   // of buffer.
   if (!exhausted) {
-    UnreadChar(current);
+    buffer_.push_front(current);
   }
   return hasWhitespaceOrComment;
 }
@@ -100,8 +100,10 @@ char StreamBuffer::NextChar() {
 }
 
 void StreamBuffer::UnreadChar(const char c) {
-  exhausted = false;
-  buffer_.push_front(c);
+  if (c != kEOFMarker) {
+    exhausted = false;
+    buffer_.push_front(c);
+  }
 }
 
 }  // namespace truplc

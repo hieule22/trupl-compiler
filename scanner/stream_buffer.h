@@ -48,7 +48,7 @@ class StreamBuffer : public Buffer {
   // Internal character buffer.
   std::list<char> buffer_;
 
-  // Flags indicating if all the characters have been read or not.
+  // Flags indicating if EOF has been reached.
   // TODO(hieule): Remove this.
   bool exhausted;
 };

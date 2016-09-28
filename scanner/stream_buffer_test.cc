@@ -76,11 +76,13 @@ TEST(StreamBufferTest, NextCharWithLongInputStream) {
 TEST(StreamBufferTest, UnreadCharBasic) {
   std::istringstream ss("a");
   StreamBuffer buffer(&ss);
-  char result = buffer.NextChar();
+  const char result = buffer.NextChar();
   EXPECT_EQ(result, 'a');
-  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
   buffer.UnreadChar(result);
   EXPECT_EQ(buffer.NextChar(), result);
+  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
+  buffer.UnreadChar(kEOFMarker);
+  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
 }
 
 TEST(StreamBufferDeathTest, NextCharIllegalInput) {
@@ -105,18 +107,6 @@ TEST(StreamBufferDeathTest, NextCharIllegalInput) {
                 ::testing::ExitedWithCode(EXIT_FAILURE),
                 "c*Invalid character: \\$c*");
   }
-}
-
-TEST(StreamBufferDeathTest, UnreadIllegalChar) {
-  std::istringstream ss("");
-  StreamBuffer buffer(&ss);
-  EXPECT_EQ(buffer.NextChar(), kEOFMarker);
-  buffer.UnreadChar('a');
-  EXPECT_EQ(buffer.NextChar(), 'a');
-  buffer.UnreadChar('$');
-  ASSERT_EXIT(buffer.NextChar(),
-              ::testing::ExitedWithCode(EXIT_FAILURE),
-              "c*Invalid character: \\$c*");
 }
 
 }  // namespace
