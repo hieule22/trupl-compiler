@@ -40,6 +40,7 @@ cc_library(
 cc_test(
   name = "file_buffer_test",
   srcs = ["file_buffer_test.cc"],
+  size = "small",
   deps = [
        ":file_buffer",
        "//third_party/gtest:gtest_main",
@@ -63,6 +64,18 @@ cc_library(
        "//tokens:number_token",
        "//tokens:identifier_token",
        "//tokens:eof_token",
+  ],
+  copts = ["-std=c++14", "-Wall"],
+)
+
+cc_test(
+  name = "scanner_test",
+  srcs = ["scanner_test.cc"],
+  size = "small",
+  deps = [
+       ":scanner",
+       ":stream_buffer",
+       "//third_party/gtest:gtest_main",
   ],
   copts = ["-std=c++14"],
 )

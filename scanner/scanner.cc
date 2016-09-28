@@ -133,6 +133,8 @@ Scanner::Scanner(const std::string& filename)
 Scanner::Scanner(std::unique_ptr<Buffer> buffer)
     : buffer_(std::move(buffer)) {}
 
+Scanner::~Scanner() {}
+
 std::unique_ptr<Token> Scanner::NextToken() {
   int state = START;
   std::string attribute;
@@ -141,6 +143,8 @@ std::unique_ptr<Token> Scanner::NextToken() {
   while (state != DONE) {
     // Always read a char from buffer before each transition.
     char c = buffer_->NextChar();
+    // std::cerr << "State: " << state << std::endl;
+    // std::cerr << "Symbol: " << c << std::endl;
 
     switch (state) {
       case START:
@@ -431,7 +435,7 @@ std::unique_ptr<Token> Scanner::NextToken() {
         break;
 
       case ELS:
-        if (c == 'E') {
+        if (c == 'e') {
           state = ELSE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
@@ -563,6 +567,7 @@ std::unique_ptr<Token> Scanner::NextToken() {
             buffer_->UnreadChar(c);
           }
         }
+        break;
 
       case LO:
         if (c == 'o') {
