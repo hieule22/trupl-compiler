@@ -97,7 +97,7 @@ const int ASSIGN = 33;
 
 // Checks if a target character is a member of a given set of characters.
 bool IsMemberOf(const char target, const std::vector<char>& collection) {
-  for (char c : collection) {
+  for (const char c : collection) {
     if (target == c) {
       return true;
     }
@@ -133,7 +133,10 @@ Scanner::Scanner(const std::string& filename)
 Scanner::Scanner(std::unique_ptr<Buffer> buffer)
     : buffer_(std::move(buffer)) {}
 
-Scanner::~Scanner() {}
+void Scanner::ScannerFatalError(const std::string& message) const {
+  std::cerr << "Exiting on Scanner Fatal Error: " << message << std::endl;
+  exit(EXIT_FAILURE);
+}
 
 std::unique_ptr<Token> Scanner::NextToken() {
   int state = START;
@@ -1248,11 +1251,6 @@ std::unique_ptr<Token> Scanner::NextToken() {
   }
 
   return std::unique_ptr<Token>(token);
-}
-
-void Scanner::ScannerFatalError(const std::string& message) const {
-  std::cerr << "Exiting on Scanner Fatal Error: " << message << std::endl;
-  exit(EXIT_FAILURE);
 }
 
 }  // namespace truplc

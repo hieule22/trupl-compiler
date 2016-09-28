@@ -26,15 +26,13 @@ class Scanner {
   // Constructs a Scanner for a given file.
   explicit Scanner(const std::string& filename);
 
-  // Constructs a Scanner on a given buffer.
+  // Constructs a Scanner as wrapper on a given buffer.
   explicit Scanner(std::unique_ptr<Buffer> buffer);
-
-  ~Scanner();
 
   // Returns the next token in this file.
   std::unique_ptr<Token> NextToken();
 
- private:
+ private: 
   // If a lexical error OR an internal scanner error occurs, call this method.
   // It will print the message and exit.
   void ScannerFatalError(const std::string& message) const;
