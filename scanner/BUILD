@@ -6,6 +6,16 @@ cc_library(
   srcs = ["buffer.cc"],
 )
 
+cc_test(
+  name = "buffer_test",
+  srcs = ["buffer_test.cc"],
+  size = "small",
+  deps = [
+       ":buffer",
+       "//third_party/gtest:gtest_main",
+  ],
+)
+
 cc_library(
   name = "stream_buffer",
   srcs = ["stream_buffer.cc"],
