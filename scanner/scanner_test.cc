@@ -6,53 +6,83 @@
 #include <sstream>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 #include "gtest/gtest.h"
 #include "scanner/stream_buffer.h"
+
+// Keywords.
+#define PROGRAM   KeywordToken(KeywordAttribute::kProgram)
+#define PROCEDURE KeywordToken(KeywordAttribute::kProcedure)
+#define INT       KeywordToken(KeywordAttribute::kInt)
+#define BOOL      KeywordToken(KeywordAttribute::kBool)
+#define BEGIN     KeywordToken(KeywordAttribute::kBegin)
+#define END       KeywordToken(KeywordAttribute::kEnd)
+#define IF        KeywordToken(KeywordAttribute::kIf)
+#define THEN      KeywordToken(KeywordAttribute::kThen)
+#define ELSE      KeywordToken(KeywordAttribute::kElse)
+#define WHILE     KeywordToken(KeywordAttribute::kWhile)
+#define LOOP      KeywordToken(KeywordAttribute::kLoop)
+#define PRINT     KeywordToken(KeywordAttribute::kPrint)
+#define NOT       KeywordToken(KeywordAttribute::kNot)
+
+// Punctuations.
+#define SEMICOLON    PunctuationToken(PunctuationAttribute::kSemicolon)
+#define COLON        PunctuationToken(PunctuationAttribute::kColon)
+#define COMMA        PunctuationToken(PunctuationAttribute::kComma)
+#define ASSIGNMENT   PunctuationToken(PunctuationAttribute::kAssignment)
+#define OPENBRACKET  PunctuationToken(PunctuationAttribute::kOpenBracket)
+#define CLOSEBRACKET PunctuationToken(PunctuationAttribute::kCloseBracket)
+
+// Relational operators.
+#define EQUAL          RelOperatorToken(RelOperatorAttribute::kEqual)
+#define NOTEQUAL       RelOperatorToken(RelOperatorAttribute::kNotEqual)
+#define GREATERTHAN    RelOperatorToken(RelOperatorAttribute::kGreaterThan)
+#define GREATEROREQUAL RelOperatorToken(RelOperatorAttribute::kGreaterOrEqual)
+#define LESSTHAN       RelOperatorToken(RelOperatorAttribute::kLessThan)
+#define LESSOREQUAL    RelOperatorToken(RelOperatorAttribute::kLessOrEqual)
+
+// Additive operators.
+#define ADD      AddOperatorToken(AddOperatorAttribute::kAdd)
+#define SUBTRACT AddOperatorToken(AddOperatorAttribute::kSubtract)
+#define OR       AddOperatorToken(AddOperatorAttribute::kOr)
+
+// Multiplicative operators.
+#define MULTIPLY MulOperatorToken(MulOperatorAttribute::kMultiply)
+#define DIVIDE   MulOperatorToken(MulOperatorAttribute::kDivide)
+#define AND      MulOperatorToken(MulOperatorAttribute::kAnd)
+
+// Identifiers and numbers.
+#define IDENTIFIER(id) IdentifierToken(id)
+#define NUMBER(num)    NumberToken(num)
+
+// EOF
+#define ENDOFFILE EOFToken()
 
 namespace truplc {
 namespace {
 
 class ScannerTest : public testing::Test {
  protected:
-  ScannerTest() {
-    table["int"] = std::make_unique<KeywordToken>(KeywordAttribute::kInt);
-    table["a"] = std::make_unique<IdentifierToken>("a");
-    table["="] = std::make_unique<RelOperatorToken>(
-        RelOperatorAttribute::kEqual);
-    table["1"] = std::make_unique<NumberToken>("1");
-    table[";"] = std::make_unique<PunctuationToken>(
-        PunctuationAttribute::kSemicolon);
-    table["+"] = std::make_unique<AddOperatorToken>(AddOperatorAttribute::kAdd);
-    table["$"] = std::make_unique<EOFToken>();
-  }
-  
   // Creates a character buffer from given input string.
   std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
     ss = std::make_unique<std::istringstream>(input);
     return std::make_unique<StreamBuffer>(ss.get());
   }
 
-  // Gets the cached attributes for a given list of tokens.
-  std::vector<Token*> GetAttributes(const std::vector<std::string>& tokens) {
-    std::vector<Token*> attributes;
-    for (const std::string& token : tokens) {
-      attributes.push_back(table[token].get());
-    }
-    return attributes;
-  }
-
-  // Checks if the token represented in given string matches expected token.
-  void TestSingleToken(const std::string& input, const Token& expected) {
+  // Checks if the token represented in input string matches expected token.
+  void MatchSingleToken(const std::string& input, const Token& expected) {
     Scanner scanner(CreateBuffer(input));
     std::unique_ptr<Token> actual = scanner.NextToken();
     EXPECT_EQ(actual->DebugString(), expected.DebugString());
+    EXPECT_EQ(scanner.NextToken()->DebugString(), ENDOFFILE.DebugString());
   }
 
-  void TestMultipleTokens(const std::string& input,
-                          const std::vector<Token*> tokens) {
+  // Tests if the tokens represented in input string matches a list of
+  // expected tokens.
+  void MatchTokens(const std::string& input, const std::vector<Token*>& token) {
     Scanner scanner(CreateBuffer(input));
-    for (const Token* expected : tokens) {
+    for (const auto& expected : token) {
       std::unique_ptr<Token> actual = scanner.NextToken();
       EXPECT_EQ(actual->DebugString(), expected->DebugString());
     }
@@ -60,71 +90,91 @@ class ScannerTest : public testing::Test {
 
  private:
   std::unique_ptr<std::istringstream> ss;
-  std::unordered_map<std::string, std::unique_ptr<Token>> table;
 };
 
 TEST_F(ScannerTest, NextTokenBasic) {
-  TestSingleToken("program", KeywordToken(KeywordAttribute::kProgram));
-  TestSingleToken("procedure", KeywordToken(KeywordAttribute::kProcedure));
-  TestSingleToken("int", KeywordToken(KeywordAttribute::kInt));
-  TestSingleToken("bool", KeywordToken(KeywordAttribute::kBool));
-  TestSingleToken("begin", KeywordToken(KeywordAttribute::kBegin));
-  TestSingleToken("end", KeywordToken(KeywordAttribute::kEnd));
-  TestSingleToken("if", KeywordToken(KeywordAttribute::kIf));
-  TestSingleToken("then", KeywordToken(KeywordAttribute::kThen));
-  TestSingleToken("else", KeywordToken(KeywordAttribute::kElse));
-  TestSingleToken("while", KeywordToken(KeywordAttribute::kWhile));
-  TestSingleToken("loop", KeywordToken(KeywordAttribute::kLoop));
-  TestSingleToken("print", KeywordToken(KeywordAttribute::kPrint));
-  TestSingleToken("not", KeywordToken(KeywordAttribute::kNot));
+  MatchSingleToken("program", PROGRAM);
+  MatchSingleToken("procedure", PROCEDURE);
+  MatchSingleToken("int", INT);
+  MatchSingleToken("bool", BOOL);
+  MatchSingleToken("begin", BEGIN);
+  MatchSingleToken("end", END);
+  MatchSingleToken("if", IF);
+  MatchSingleToken("then", THEN);
+  MatchSingleToken("else", ELSE);
+  MatchSingleToken("while", WHILE);
+  MatchSingleToken("loop", LOOP);
+  MatchSingleToken("print", PRINT);
+  MatchSingleToken("not", NOT);
 
-  TestSingleToken(";", PunctuationToken(PunctuationAttribute::kSemicolon));
-  TestSingleToken(":", PunctuationToken(PunctuationAttribute::kColon));
-  TestSingleToken(",", PunctuationToken(PunctuationAttribute::kComma));
-  TestSingleToken(":=", PunctuationToken(PunctuationAttribute::kAssignment));
-  TestSingleToken("(", PunctuationToken(PunctuationAttribute::kOpenBracket));
-  TestSingleToken(")", PunctuationToken(PunctuationAttribute::kCloseBracket));
+  MatchSingleToken(";", SEMICOLON);
+  MatchSingleToken(":", COLON);
+  MatchSingleToken(",", COMMA);
+  MatchSingleToken(":=", ASSIGNMENT);
+  MatchSingleToken("(", OPENBRACKET);
+  MatchSingleToken(")", CLOSEBRACKET);
 
-  TestSingleToken("=", RelOperatorToken(RelOperatorAttribute::kEqual));
-  TestSingleToken("<>", RelOperatorToken(RelOperatorAttribute::kNotEqual));
-  TestSingleToken(">", RelOperatorToken(RelOperatorAttribute::kGreaterThan));
-  TestSingleToken(">=", RelOperatorToken(RelOperatorAttribute::kGreaterOrEqual));
-  TestSingleToken("<", RelOperatorToken(RelOperatorAttribute::kLessThan));
-  TestSingleToken("<=", RelOperatorToken(RelOperatorAttribute::kLessOrEqual));
+  MatchSingleToken("=", EQUAL);
+  MatchSingleToken("<>", NOTEQUAL);
+  MatchSingleToken(">", GREATERTHAN);
+  MatchSingleToken(">=", GREATEROREQUAL);
+  MatchSingleToken("<", LESSTHAN);
+  MatchSingleToken("<=", LESSOREQUAL);
 
-  TestSingleToken("+", AddOperatorToken(AddOperatorAttribute::kAdd));
-  TestSingleToken("-", AddOperatorToken(AddOperatorAttribute::kSubtract));
-  TestSingleToken("or", AddOperatorToken(AddOperatorAttribute::kOr));
+  MatchSingleToken("+", ADD);
+  MatchSingleToken("-", SUBTRACT);
+  MatchSingleToken("or", OR);
 
-  TestSingleToken("*", MulOperatorToken(MulOperatorAttribute::kMultiply));
-  TestSingleToken("/", MulOperatorToken(MulOperatorAttribute::kDivide));
-  TestSingleToken("and", MulOperatorToken(MulOperatorAttribute::kAnd));
+  MatchSingleToken("*", MULTIPLY);
+  MatchSingleToken("/", DIVIDE);
+  MatchSingleToken("and", AND);
 
-  TestSingleToken("foobarquoz", IdentifierToken("foobarquoz"));
-  TestSingleToken("a", IdentifierToken("a"));
-  TestSingleToken("z", IdentifierToken("z"));
-  TestSingleToken("ints", IdentifierToken("ints"));
-  TestSingleToken("loo", IdentifierToken("loo"));
-  TestSingleToken("elseif", IdentifierToken("elseif"));
-  TestSingleToken("myprocedure", IdentifierToken("myprocedure"));
-  TestSingleToken("andnota23", IdentifierToken("andnota23"));
-  TestSingleToken("a1b2c3d4e5f6g7h8i9", IdentifierToken("a1b2c3d4e5f6g7h8i9"));
-  TestSingleToken("a123456789", IdentifierToken("a123456789"));
+  MatchSingleToken("foobarquoz", IDENTIFIER("foobarquoz"));
+  MatchSingleToken("a", IDENTIFIER("a"));
+  MatchSingleToken("z", IDENTIFIER("z"));
+  MatchSingleToken("ints", IDENTIFIER("ints"));
+  MatchSingleToken("loo", IDENTIFIER("loo"));
+  MatchSingleToken("elseif", IDENTIFIER("elseif"));
+  MatchSingleToken("myprocedure", IDENTIFIER("myprocedure"));
+  MatchSingleToken("andnota23", IDENTIFIER("andnota23"));
+  MatchSingleToken("a1b2c3d4e5f6g7h8i9", IDENTIFIER("a1b2c3d4e5f6g7h8i9"));
+  MatchSingleToken("a123456789", IDENTIFIER("a123456789"));
 
-  TestSingleToken("1", NumberToken("1"));
-  TestSingleToken("9999999999999", NumberToken("9999999999999"));
-  TestSingleToken("000000000000", NumberToken("000000000000"));
-  TestSingleToken("123456789", NumberToken("123456789"));
+  MatchSingleToken("1", NUMBER("1"));
+  MatchSingleToken("9999999999999", NUMBER("9999999999999"));
+  MatchSingleToken("000000000000", NUMBER("000000000000"));
+  MatchSingleToken("123456789", NUMBER("123456789"));
 
-  TestSingleToken("", EOFToken());
+  MatchSingleToken("", ENDOFFILE);
 }
 
+// TODO(hieutle): Fix memory leaks.
 TEST_F(ScannerTest, MultipleNextTokens) {
-  TestMultipleTokens("int a = 1;", GetAttributes({
-        "int", "a", "=", "1", ";"}));
-  TestMultipleTokens("int a = 1 + 1 + 1;", GetAttributes({
-        "int", "a", "=", "1", "+", "1", "+", "1", ";"}));
+  MatchTokens("int a = 1;", { new INT, new IDENTIFIER("a"), new EQUAL,
+          new NUMBER("1"), new SEMICOLON, new ENDOFFILE });
+  MatchTokens("int a = 1 + 1 + 1;", { new INT, new IDENTIFIER("a"),
+          new EQUAL, new NUMBER("1"), new ADD, new NUMBER("1"), new ADD,
+          new NUMBER("1"), new SEMICOLON, new ENDOFFILE });
+  MatchTokens("while else int", { new WHILE, new ELSE, new INT,
+          new ENDOFFILE });
+  MatchTokens("foo bar baz", { new IDENTIFIER("foo"),
+          new IDENTIFIER("bar"), new IDENTIFIER("baz"), new ENDOFFILE });
+  MatchTokens("and nota2", { new AND, new IDENTIFIER("nota2"), new ENDOFFILE});
+  MatchTokens("and not a23", { new AND, new NOT, new IDENTIFIER("a23"),
+          new ENDOFFILE });
+  MatchTokens("integer >= 2", { new IDENTIFIER("integer"), new GREATEROREQUAL,
+          new NUMBER("2"), new ENDOFFILE });
+  MatchTokens("integer > = 2", { new IDENTIFIER("integer"), new GREATERTHAN,
+          new EQUAL, new NUMBER("2"), new ENDOFFILE });
+  MatchTokens("if(a+1)*2=2then", { new IF, new OPENBRACKET, new IDENTIFIER("a"),
+          new ADD, new NUMBER("1"), new CLOSEBRACKET, new MULTIPLY,
+          new NUMBER("2"), new EQUAL, new NUMBER("2"), new THEN,
+          new ENDOFFILE });
+  MatchTokens("a1+b2<>c3", { new IDENTIFIER("a1"), new ADD,
+          new IDENTIFIER("b2"), new NOTEQUAL, new IDENTIFIER("c3"),
+          new ENDOFFILE });
 }
 
 }  // namespace
 }  // namespace truplc
+
