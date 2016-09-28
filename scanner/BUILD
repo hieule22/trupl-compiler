@@ -89,3 +89,9 @@ cc_test(
   ],
   copts = ["-std=c++14"],
 )
+
+cc_binary(
+  name = "scanner_main",
+  srcs = ["scanner_main.cc"],
+  deps = [":scanner"],
+)
