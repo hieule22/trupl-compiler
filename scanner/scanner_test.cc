@@ -4,6 +4,7 @@
 #include "scanner/scanner.h"
 
 #include <sstream>
+#include <unordered_map>
 #include <utility>
 
 #include "gtest/gtest.h"
@@ -14,24 +15,52 @@ namespace {
 
 class ScannerTest : public testing::Test {
  protected:
+  ScannerTest() {
+    table["int"] = std::make_unique<KeywordToken>(KeywordAttribute::kInt);
+    table["a"] = std::make_unique<IdentifierToken>("a");
+    table["="] = std::make_unique<RelOperatorToken>(
+        RelOperatorAttribute::kEqual);
+    table["1"] = std::make_unique<NumberToken>("1");
+    table[";"] = std::make_unique<PunctuationToken>(
+        PunctuationAttribute::kSemicolon);
+    table["+"] = std::make_unique<AddOperatorToken>(AddOperatorAttribute::kAdd);
+    table["$"] = std::make_unique<EOFToken>();
+  }
+  
   // Creates a character buffer from given input string.
   std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
     ss = std::make_unique<std::istringstream>(input);
     return std::make_unique<StreamBuffer>(ss.get());
   }
 
+  // Gets the cached attributes for a given list of tokens.
+  std::vector<Token*> GetAttributes(const std::vector<std::string>& tokens) {
+    std::vector<Token*> attributes;
+    for (const std::string& token : tokens) {
+      attributes.push_back(table[token].get());
+    }
+    return attributes;
+  }
+
   // Checks if the token represented in given string matches expected token.
-  template <typename T>
-  void TestSingleToken(const std::string& input, const T& expected) {
+  void TestSingleToken(const std::string& input, const Token& expected) {
     Scanner scanner(CreateBuffer(input));
-    std::unique_ptr<Token> result = scanner.NextToken();
-    T* token = dynamic_cast<T*>(result.get());
-    ASSERT_TRUE(token != nullptr);
-    EXPECT_EQ(token->DebugString(), expected.DebugString());
+    std::unique_ptr<Token> actual = scanner.NextToken();
+    EXPECT_EQ(actual->DebugString(), expected.DebugString());
+  }
+
+  void TestMultipleTokens(const std::string& input,
+                          const std::vector<Token*> tokens) {
+    Scanner scanner(CreateBuffer(input));
+    for (const Token* expected : tokens) {
+      std::unique_ptr<Token> actual = scanner.NextToken();
+      EXPECT_EQ(actual->DebugString(), expected->DebugString());
+    }
   }
 
  private:
   std::unique_ptr<std::istringstream> ss;
+  std::unordered_map<std::string, std::unique_ptr<Token>> table;
 };
 
 TEST_F(ScannerTest, NextTokenBasic) {
@@ -86,6 +115,15 @@ TEST_F(ScannerTest, NextTokenBasic) {
   TestSingleToken("9999999999999", NumberToken("9999999999999"));
   TestSingleToken("000000000000", NumberToken("000000000000"));
   TestSingleToken("123456789", NumberToken("123456789"));
+
+  TestSingleToken("", EOFToken());
+}
+
+TEST_F(ScannerTest, MultipleNextTokens) {
+  TestMultipleTokens("int a = 1;", GetAttributes({
+        "int", "a", "=", "1", ";"}));
+  TestMultipleTokens("int a = 1 + 1 + 1;", GetAttributes({
+        "int", "a", "=", "1", "+", "1", "+", "1", ";"}));
 }
 
 }  // namespace
