@@ -40,8 +40,9 @@ class Buffer {
   // read past the end of input.
   virtual char NextChar() = 0;
 
-  // Places a character back into the buffer. Should not be called more than
-  // once without an intervening call to NextChar().
+  // Places a character back into the buffer. c must be the last character
+  // returned by NextChar(). Should not be called more than once without an
+  // intervening call to NextChar().
   virtual void UnreadChar(char c) = 0;
 
  protected:
