@@ -713,6 +713,7 @@ std::unique_ptr<Token> Scanner::NextToken() {
           attribute.push_back(c);
         } else if (c == 'o') {
           state = PRO;
+          attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
           state = IDENTIFIER;
           attribute.push_back(c);
