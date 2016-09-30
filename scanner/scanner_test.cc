@@ -3,13 +3,13 @@
 
 #include "scanner/scanner.h"
 
+#include <list>
 #include <sstream>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "scanner/stream_buffer.h"
 
 // Keywords.
 #define PROGRAM   KeywordToken(KeywordAttribute::kProgram)
@@ -62,12 +62,39 @@
 namespace truplc {
 namespace {
 
+// Mock class that mimicks the behaviors of a Buffer class.
+class MockBuffer : public Buffer {
+ public:
+  // Input string must be in the proper format ready for processing by Scanner.
+  explicit MockBuffer(const std::string& input)
+      : buffer_(input.begin(), input.end()) {}
+
+  char NextChar() override {
+    if (buffer_.empty()) {
+      return kEOFMarker;
+    }
+    const char head = buffer_.front();
+    buffer_.pop_front();
+    return head;
+  }
+
+  void UnreadChar(const char c) override {
+    if (c != kEOFMarker) {
+      buffer_.push_front(c);
+    }
+  }
+
+ private:
+  std::list<char> buffer_;
+};
+
 class ScannerTest : public testing::Test {
  protected:
   // Creates a character buffer from given input string.
   std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
-    ss = std::make_unique<std::istringstream>(input);
-    return std::make_unique<StreamBuffer>(ss.get());
+    // ss = std::make_unique<std::istringstream>(input);
+    // return std::make_unique<StreamBuffer>(ss.get());
+    return std::make_unique<MockBuffer>(input);
   }
 
   // Checks if the token represented in input string matches expected token.
@@ -131,7 +158,7 @@ TEST_F(ScannerTest, NextTokenBasic) {
   MatchSingleToken("en", IDENTIFIER("en"));
   MatchSingleToken("end", END);
   MatchSingleToken("end123", IDENTIFIER("end123"));
-  
+
   MatchSingleToken("if", IF);
   MatchSingleToken("iffy", IDENTIFIER("iffy"));
 
@@ -165,10 +192,10 @@ TEST_F(ScannerTest, NextTokenBasic) {
   MatchSingleToken("print", PRINT);
   MatchSingleToken("printend", IDENTIFIER("printend"));
 
-  MatchSingleToken("n", IDENTIFIER("n"));  
+  MatchSingleToken("n", IDENTIFIER("n"));
   MatchSingleToken("no", IDENTIFIER("no"));
   MatchSingleToken("not", NOT);
-  MatchSingleToken("not123", IDENTIFIER("not123"));  
+  MatchSingleToken("not123", IDENTIFIER("not123"));
 
   MatchSingleToken("o", IDENTIFIER("o"));
   MatchSingleToken("or", OR);
@@ -178,7 +205,7 @@ TEST_F(ScannerTest, NextTokenBasic) {
   MatchSingleToken("an", IDENTIFIER("an"));
   MatchSingleToken("and", AND);
   MatchSingleToken("andd", IDENTIFIER("andd"));
-  
+
   MatchSingleToken(";", SEMICOLON);
   MatchSingleToken(":", COLON);
   MatchSingleToken(",", COMMA);
@@ -195,10 +222,10 @@ TEST_F(ScannerTest, NextTokenBasic) {
 
   MatchSingleToken("+", ADD);
   MatchSingleToken("-", SUBTRACT);
-  
+
   MatchSingleToken("*", MULTIPLY);
   MatchSingleToken("/", DIVIDE);
-  
+
   MatchSingleToken("foobarquoz", IDENTIFIER("foobarquoz"));
   MatchSingleToken("a", IDENTIFIER("a"));
   MatchSingleToken("z", IDENTIFIER("z"));
