@@ -1093,7 +1093,6 @@ std::unique_ptr<Token> Scanner::NextToken() {
       case COLON:
         if (c == '=') {
           state = ASSIGN;
-          attribute.push_back(c);
         } else {
           state = DONE;
           token = new PunctuationToken(PunctuationAttribute::kColon);
@@ -1146,10 +1145,8 @@ std::unique_ptr<Token> Scanner::NextToken() {
       case LESS:
         if (c == '=') {
           state = LESSEQUAL;
-          attribute.push_back(c);
         } else if (c == '>') {
           state = NOTEQUAL;
-          attribute.push_back(c);
         } else {
           state = DONE;
           token = new RelOperatorToken(RelOperatorAttribute::kLessThan);
@@ -1178,7 +1175,6 @@ std::unique_ptr<Token> Scanner::NextToken() {
       case GREATER:
         if (c == '=') {
           state = GREATEREQUAL;
-          attribute.push_back(c);
         } else {
           state = DONE;
           token = new RelOperatorToken(RelOperatorAttribute::kGreaterThan);
