@@ -14,6 +14,7 @@ cc_test(
        ":buffer",
        "//third_party/gtest:gtest_main",
   ],
+  copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
 
 cc_library(
@@ -23,6 +24,7 @@ cc_library(
   deps = [
        ":buffer",
   ],
+  copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
 
 cc_test(
@@ -44,7 +46,7 @@ cc_library(
        ":buffer",
        ":stream_buffer",
   ],
-  copts = ["-std=c++14"],
+  copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
 
 cc_test(
@@ -91,7 +93,7 @@ cc_library(
        "//tokens:identifier_token",
        "//tokens:eof_token",
   ],
-  copts = ["-std=c++14", "-Wall"],
+  copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
 
 cc_test(
