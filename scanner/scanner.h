@@ -32,7 +32,7 @@ class Scanner {
   // Returns the next token in this file.
   std::unique_ptr<Token> NextToken();
 
- private: 
+ private:
   // If a lexical error OR an internal scanner error occurs, call this method.
   // It will print the message and exit.
   void ScannerFatalError(const std::string& message) const;

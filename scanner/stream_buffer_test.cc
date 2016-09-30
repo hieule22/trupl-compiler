@@ -82,7 +82,7 @@ TEST(StreamBufferTest, NextCharWithLongInputStream) {
   }
   {
     std::string input = "#";
-    for (int i = 0; i < 20000; ++i){
+    for (int i = 0; i < 20000; ++i) {
       input.append("#$%^&");
     }
     TestNextChar(input, {kEOFMarker});
