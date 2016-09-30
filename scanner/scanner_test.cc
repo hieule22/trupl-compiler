@@ -235,6 +235,29 @@ TEST(ScannerTest, StressTest) {
   MatchTokens(input, expected);
 }
 
+TEST(ScannerDeathTest, ScanIllegalCharacter) {
+  {
+    Scanner scanner(CreateBuffer("%"));
+    ASSERT_EXIT(scanner.NextToken(),
+                ::testing::ExitedWithCode(EXIT_FAILURE),
+                "c*Illegal character: \\%c*");
+  }
+  {
+    Scanner scanner(CreateBuffer("abcdH"));
+    scanner.NextToken();
+    ASSERT_EXIT(scanner.NextToken(),
+                ::testing::ExitedWithCode(EXIT_FAILURE),
+                "c*Illegal character: H*");
+  }
+  {
+    Scanner scanner(CreateBuffer("abcd H"));
+    scanner.NextToken();
+    ASSERT_EXIT(scanner.NextToken(),
+                ::testing::ExitedWithCode(EXIT_FAILURE),
+                "c*Illegal character: H*");
+  }
+}
+
 }  // namespace
 }  // namespace truplc
 
