@@ -92,8 +92,6 @@ class ScannerTest : public testing::Test {
  protected:
   // Creates a character buffer from given input string.
   std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
-    // ss = std::make_unique<std::istringstream>(input);
-    // return std::make_unique<StreamBuffer>(ss.get());
     return std::make_unique<MockBuffer>(input);
   }
 
