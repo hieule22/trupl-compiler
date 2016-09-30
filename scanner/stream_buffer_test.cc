@@ -64,13 +64,42 @@ TEST(StreamBufferTest, NextCharWithMixingWhitespaceAndComments) {
 }
 
 TEST(StreamBufferTest, NextCharWithLongInputStream) {
-  std::string input;
-  for (int i = 0; i < 20000; ++i) {
-    input.push_back('a');
+  {
+    std::string input;
+    for (int i = 0; i < 20000; ++i) {
+      input.push_back('a');
+    }
+    std::vector<char> expected(input.begin(), input.end());
+    expected.push_back(kEOFMarker);
+    TestNextChar(input, expected);
   }
-  std::vector<char> expected(input.begin(), input.end());
-  expected.push_back(kEOFMarker);
-  TestNextChar(input, expected);
+  {
+    std::string input = "a";
+    for (int i = 0; i < 20000; ++i) {
+      input.append(" \n\t");
+    }
+    TestNextChar(input, {'a', kSpace, kEOFMarker});
+  }
+  {
+    std::string input = "#";
+    for (int i = 0; i < 20000; ++i){
+      input.append("#$%^&");
+    }
+    TestNextChar(input, {kEOFMarker});
+    input.append("\na");
+    TestNextChar(input, {'a', kEOFMarker});
+  }
+  {
+    std::string input;
+    std::vector<char> expected;
+    for (int i = 0; i < 20000; ++i) {
+      input.append("\n\t#abc$$$$@@@\n a #^&*0099** #0\t\t\t123\n");
+      expected.push_back('a');
+      expected.push_back(kSpace);
+    }
+    expected.push_back(kEOFMarker);
+    TestNextChar(input, expected);
+  }
 }
 
 TEST(StreamBufferTest, UnreadCharBasic) {
