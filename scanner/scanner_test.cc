@@ -93,20 +93,92 @@ class ScannerTest : public testing::Test {
 };
 
 TEST_F(ScannerTest, NextTokenBasic) {
+  MatchSingleToken("p", IDENTIFIER("p"));
+  MatchSingleToken("pr", IDENTIFIER("pr"));
+  MatchSingleToken("pro", IDENTIFIER("pro"));
+  MatchSingleToken("prog", IDENTIFIER("prog"));
+  MatchSingleToken("progr", IDENTIFIER("progr"));
+  MatchSingleToken("progra", IDENTIFIER("progra"));
   MatchSingleToken("program", PROGRAM);
-  MatchSingleToken("procedure", PROCEDURE);
-  MatchSingleToken("int", INT);
-  MatchSingleToken("bool", BOOL);
-  MatchSingleToken("begin", BEGIN);
-  MatchSingleToken("end", END);
-  MatchSingleToken("if", IF);
-  MatchSingleToken("then", THEN);
-  MatchSingleToken("else", ELSE);
-  MatchSingleToken("while", WHILE);
-  MatchSingleToken("loop", LOOP);
-  MatchSingleToken("print", PRINT);
-  MatchSingleToken("not", NOT);
+  MatchSingleToken("programs", IDENTIFIER("programs"));
 
+  MatchSingleToken("proc", IDENTIFIER("proc"));
+  MatchSingleToken("proce", IDENTIFIER("proce"));
+  MatchSingleToken("proced", IDENTIFIER("proced"));
+  MatchSingleToken("procedu", IDENTIFIER("procedu"));
+  MatchSingleToken("procedur", IDENTIFIER("procedur"));
+  MatchSingleToken("procedure", PROCEDURE);
+  MatchSingleToken("procedures", IDENTIFIER("procedures"));
+
+  MatchSingleToken("i", IDENTIFIER("i"));
+  MatchSingleToken("in", IDENTIFIER("in"));
+  MatchSingleToken("int", INT);
+  MatchSingleToken("ints", IDENTIFIER("ints"));
+
+  MatchSingleToken("b", IDENTIFIER("b"));
+  MatchSingleToken("bo", IDENTIFIER("bo"));
+  MatchSingleToken("boo", IDENTIFIER("boo"));
+  MatchSingleToken("bool", BOOL);
+  MatchSingleToken("boolean", IDENTIFIER("boolean"));
+
+  MatchSingleToken("be", IDENTIFIER("be"));
+  MatchSingleToken("beg", IDENTIFIER("beg"));
+  MatchSingleToken("begi", IDENTIFIER("begi"));
+  MatchSingleToken("begin", BEGIN);
+  MatchSingleToken("beginning", IDENTIFIER("beginning"));
+
+  MatchSingleToken("e", IDENTIFIER("e"));
+  MatchSingleToken("en", IDENTIFIER("en"));
+  MatchSingleToken("end", END);
+  MatchSingleToken("end123", IDENTIFIER("end123"));
+  
+  MatchSingleToken("if", IF);
+  MatchSingleToken("iffy", IDENTIFIER("iffy"));
+
+  MatchSingleToken("t", IDENTIFIER("t"));
+  MatchSingleToken("th", IDENTIFIER("th"));
+  MatchSingleToken("the", IDENTIFIER("the"));
+  MatchSingleToken("then", THEN);
+  MatchSingleToken("thenprogram", IDENTIFIER("thenprogram"));
+
+  MatchSingleToken("e", IDENTIFIER("e"));
+  MatchSingleToken("el", IDENTIFIER("el"));
+  MatchSingleToken("els", IDENTIFIER("els"));
+  MatchSingleToken("else", ELSE);
+  MatchSingleToken("elseif", IDENTIFIER("elseif"));
+
+  MatchSingleToken("w", IDENTIFIER("w"));
+  MatchSingleToken("wh", IDENTIFIER("wh"));
+  MatchSingleToken("whi", IDENTIFIER("whi"));
+  MatchSingleToken("whil", IDENTIFIER("whil"));
+  MatchSingleToken("while", WHILE);
+  MatchSingleToken("whilelse", IDENTIFIER("whilelse"));
+
+  MatchSingleToken("l", IDENTIFIER("l"));
+  MatchSingleToken("lo", IDENTIFIER("lo"));
+  MatchSingleToken("loo", IDENTIFIER("loo"));
+  MatchSingleToken("loop", LOOP);
+  MatchSingleToken("looprint", IDENTIFIER("looprint"));
+
+  MatchSingleToken("pri", IDENTIFIER("pri"));
+  MatchSingleToken("prin", IDENTIFIER("prin"));
+  MatchSingleToken("print", PRINT);
+  MatchSingleToken("printend", IDENTIFIER("printend"));
+
+  MatchSingleToken("n", IDENTIFIER("n"));  
+  MatchSingleToken("no", IDENTIFIER("no"));
+  MatchSingleToken("not", NOT);
+  MatchSingleToken("not123", IDENTIFIER("not123"));  
+
+  MatchSingleToken("o", IDENTIFIER("o"));
+  MatchSingleToken("or", OR);
+  MatchSingleToken("orr", IDENTIFIER("orr"));
+
+  MatchSingleToken("a", IDENTIFIER("a"));
+  MatchSingleToken("an", IDENTIFIER("an"));
+  MatchSingleToken("and", AND);
+  MatchSingleToken("andd", IDENTIFIER("andd"));
+  
   MatchSingleToken(";", SEMICOLON);
   MatchSingleToken(":", COLON);
   MatchSingleToken(",", COMMA);
@@ -123,12 +195,10 @@ TEST_F(ScannerTest, NextTokenBasic) {
 
   MatchSingleToken("+", ADD);
   MatchSingleToken("-", SUBTRACT);
-  MatchSingleToken("or", OR);
-
+  
   MatchSingleToken("*", MULTIPLY);
   MatchSingleToken("/", DIVIDE);
-  MatchSingleToken("and", AND);
-
+  
   MatchSingleToken("foobarquoz", IDENTIFIER("foobarquoz"));
   MatchSingleToken("a", IDENTIFIER("a"));
   MatchSingleToken("z", IDENTIFIER("z"));
@@ -162,6 +232,8 @@ TEST_F(ScannerTest, MultipleNextTokens) {
   MatchTokens("and nota2", { new AND, new IDENTIFIER("nota2"), new ENDOFFILE});
   MatchTokens("and not a23", { new AND, new NOT, new IDENTIFIER("a23"),
           new ENDOFFILE });
+  MatchTokens("123abc", { new NUMBER("123"), new IDENTIFIER("abc"),
+          new ENDOFFILE });
   MatchTokens("integer >= 2", { new IDENTIFIER("integer"), new GREATEROREQUAL,
           new NUMBER("2"), new ENDOFFILE });
   MatchTokens("integer > = 2", { new IDENTIFIER("integer"), new GREATERTHAN,
@@ -173,6 +245,22 @@ TEST_F(ScannerTest, MultipleNextTokens) {
   MatchTokens("a1+b2<>c3", { new IDENTIFIER("a1"), new ADD,
           new IDENTIFIER("b2"), new NOTEQUAL, new IDENTIFIER("c3"),
           new ENDOFFILE });
+}
+
+// TODO(hieule22): Fix memory leaks.
+TEST_F(ScannerTest, StressTest) {
+  std::string input;
+  std::vector<Token*> expected;
+  Token* tokens[] = {new IDENTIFIER("foo"), new EQUAL, new NUMBER("1"), new AND,
+                     new IDENTIFIER("bar"), new NOTEQUAL, new NUMBER("2")};
+  for (int i = 0; i < 20000; ++i) {
+    input.append("foo = 1 and bar <> 2");
+    for (auto iter = std::begin(tokens); iter != std::end(tokens); ++iter) {
+      expected.push_back(*iter);
+    }
+  }
+  expected.push_back(new ENDOFFILE);
+  MatchTokens(input, expected);
 }
 
 }  // namespace
