@@ -88,36 +88,30 @@ class MockBuffer : public Buffer {
   std::list<char> buffer_;
 };
 
-class ScannerTest : public testing::Test {
- protected:
-  // Creates a character buffer from given input string.
-  std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
-    return std::make_unique<MockBuffer>(input);
-  }
+// Creates a character buffer from given input string.
+std::unique_ptr<Buffer> CreateBuffer(const std::string& input) {
+  return std::make_unique<MockBuffer>(input);
+}
 
-  // Checks if the token represented in input string matches expected token.
-  void MatchSingleToken(const std::string& input, const Token& expected) {
-    Scanner scanner(CreateBuffer(input));
+// Checks if the token represented in input string matches expected token.
+void MatchSingleToken(const std::string& input, const Token& expected) {
+  Scanner scanner(CreateBuffer(input));
+  std::unique_ptr<Token> actual = scanner.NextToken();
+  EXPECT_EQ(actual->DebugString(), expected.DebugString());
+  EXPECT_EQ(scanner.NextToken()->DebugString(), ENDOFFILE.DebugString());
+}
+
+// Tests if the tokens represented in input string matches a list of
+// expected tokens.
+void MatchTokens(const std::string& input, const std::vector<Token*>& token) {
+  Scanner scanner(CreateBuffer(input));
+  for (const auto& expected : token) {
     std::unique_ptr<Token> actual = scanner.NextToken();
-    EXPECT_EQ(actual->DebugString(), expected.DebugString());
-    EXPECT_EQ(scanner.NextToken()->DebugString(), ENDOFFILE.DebugString());
+    EXPECT_EQ(actual->DebugString(), expected->DebugString());
   }
+}
 
-  // Tests if the tokens represented in input string matches a list of
-  // expected tokens.
-  void MatchTokens(const std::string& input, const std::vector<Token*>& token) {
-    Scanner scanner(CreateBuffer(input));
-    for (const auto& expected : token) {
-      std::unique_ptr<Token> actual = scanner.NextToken();
-      EXPECT_EQ(actual->DebugString(), expected->DebugString());
-    }
-  }
-
- private:
-  std::unique_ptr<std::istringstream> ss;
-};
-
-TEST_F(ScannerTest, NextTokenBasic) {
+TEST(ScannerTest, NextTokenBasic) {
   MatchSingleToken("p", IDENTIFIER("p"));
   MatchSingleToken("pr", IDENTIFIER("pr"));
   MatchSingleToken("pro", IDENTIFIER("pro"));
@@ -244,7 +238,7 @@ TEST_F(ScannerTest, NextTokenBasic) {
 }
 
 // TODO(hieutle): Fix memory leaks.
-TEST_F(ScannerTest, MultipleNextTokens) {
+TEST(ScannerTest, MultipleNextTokens) {
   MatchTokens("int a = 1;", { new INT, new IDENTIFIER("a"), new EQUAL,
           new NUMBER("1"), new SEMICOLON, new ENDOFFILE });
   MatchTokens("int a = 1 + 1 + 1;", { new INT, new IDENTIFIER("a"),
@@ -273,7 +267,7 @@ TEST_F(ScannerTest, MultipleNextTokens) {
 }
 
 // TODO(hieule22): Fix memory leaks.
-TEST_F(ScannerTest, StressTest) {
+TEST(ScannerTest, StressTest) {
   std::string input;
   std::vector<Token*> expected;
   Token* tokens[] = {new IDENTIFIER("foo"), new EQUAL, new NUMBER("1"), new AND,
