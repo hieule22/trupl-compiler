@@ -84,8 +84,7 @@ cc_test(
   size = "small",
   deps = [
        ":scanner",
-       ":stream_buffer",
-       "//third_party/gtest:gtest_main",
+        "//third_party/gtest:gtest_main",
   ],
   copts = ["-std=c++14"],
 )
