@@ -59,6 +59,22 @@ cc_test(
 )
 
 cc_library(
+  name = "test_utils",
+  hdrs = ["test_utils.h"],
+  deps = [
+       "//tokens:token",
+       "//tokens:keyword_token",
+       "//tokens:punctuation_token",
+       "//tokens:rel_operator_token",
+       "//tokens:add_operator_token",
+       "//tokens:mul_operator_token",
+       "//tokens:number_token",
+       "//tokens:identifier_token",
+       "//tokens:eof_token",
+   ],
+)
+
+cc_library(
   name = "scanner",
   srcs = ["scanner.cc"],
   hdrs = ["scanner.h"],
@@ -84,6 +100,7 @@ cc_test(
   size = "small",
   deps = [
        ":scanner",
+       ":test_utils",
         "//third_party/gtest:gtest_main",
   ],
   copts = ["-std=c++14"],
