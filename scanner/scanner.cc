@@ -95,9 +95,10 @@ const int MULTIPLY = 22;
 const int DIVIDE = 32;
 const int ASSIGN = 33;
 
-// Checks if a target character is a member of a given set of characters.
-bool IsMemberOf(const char target, const std::vector<char>& collection) {
-  for (const char c : collection) {
+// Checks if a target is a member of a collection.
+template <typename T>
+bool IsMemberOf(const T& target, const std::vector<T>& collection) {
+  for (const T& c : collection) {
     if (target == c) {
       return true;
     }
