@@ -4,6 +4,7 @@ cc_library(
   name = "buffer",
   hdrs = ["buffer.h"],
   srcs = ["buffer.cc"],
+  deps = ["//util:container_util"],
 )
 
 cc_test(
