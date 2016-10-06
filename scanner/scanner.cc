@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "scanner/file_buffer.h"
+#include "util/container_util.h"
 
 namespace truplc {
 namespace {
@@ -95,17 +96,6 @@ const int MULTIPLY = 22;
 const int DIVIDE = 32;
 const int ASSIGN = 33;
 
-// Checks if a target is a member of a collection.
-template <typename T>
-bool IsMemberOf(const T& target, const std::vector<T>& collection) {
-  for (const T& c : collection) {
-    if (target == c) {
-      return true;
-    }
-  }
-  return false;
-}
-
 // Checks if a given character represents a lowercase letter.
 bool IsAlpha(const char c) {
   return std::islower(c);
@@ -152,8 +142,8 @@ std::unique_ptr<Token> Scanner::NextToken() {
 
     switch (state) {
       case START:
-        if (IsAlpha(c) && !IsMemberOf(c, {
-              'a', 'b', 'e', 'i', 'l', 'n', 'o', 'p', 't', 'w'})) {
+        if (IsAlpha(c) && !Contain<std::vector<int>, int>( {
+              'a', 'b', 'e', 'i', 'l', 'n', 'o', 'p', 't', 'w'}, c)) {
           state = IDENTIFIER;
           attribute.push_back(c);
         } else if (c == 'a') {

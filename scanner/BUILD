@@ -93,6 +93,7 @@ cc_library(
        "//tokens:number_token",
        "//tokens:identifier_token",
        "//tokens:eof_token",
+       "//util:container_util",
   ],
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
