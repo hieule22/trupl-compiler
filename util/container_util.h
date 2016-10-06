@@ -10,12 +10,18 @@ namespace truplc {
 
 // Checks if a given value is a member of the specified container.
 template <typename Container, typename T>
-bool Contain(const Container& container, const T& value);
+bool Contain(const Container& container, const T& value) {
+  return std::find(std::begin(container), std::end(container), value)
+      != std::end(container);
+}
 
 // Searches for a given value inside a specified container.
 // Returns a pointer to the element if found; NULL otherwise.
 template <typename Container, typename T>
-T* FindOrNull(const Container& container, const T& value);
+const T* FindOrNull(const Container& container, const T& value) {
+  auto pointer = std::find(std::begin(container), std::end(container), value);
+  return pointer != std::end(container) ? &(*pointer) : nullptr;
+}
 
 }  // namespace truplc
 
