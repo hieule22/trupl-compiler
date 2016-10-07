@@ -14,3 +14,18 @@ cc_test(
        "//third_party/gtest:gtest_main",
   ],
 )
+
+cc_library(
+  name = "text_colorizer",
+  srcs = ["text_colorizer.cc"],
+  hdrs = ["text_colorizer.h"],
+)
+
+cc_test(
+  name = "text_colorizer_test",
+  srcs = ["text_colorizer_test.cc"],
+  deps = [
+       ":text_colorizer",
+       "//third_party/gtest:gtest_main",
+  ],
+)
