@@ -1,21 +1,15 @@
 # Makefile for building token classes.
 
 ROOTDIR = ..
-SRCDIR = $(ROOTDIR)/tokens
 CXXFLAGS += -g -std=c++14 -Wall -Wextra --pedantic
 
 # Components of the library.
-token_objects = token.o keyword_token.o punctuation_token.o \
+TOKEN_OBJECTS = token.o keyword_token.o punctuation_token.o \
 		rel_operator_token.o add_operator_token.o \
 		mul_operator_token.o identifier_token.o \
 		number_token.o eof_token.o
 
-token_headers = token.h keyword_token.h punctuation_token.h \
-		rel_operator_token.h add_operator_token.h \
-		mul_operator_token.h identifier_token.h \
-		number_token.h eof_token.h
-
-all:	$(token_objects)
+all:	$(TOKEN_OBJECTS)
 
 token.o: token.h token.cc
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c token.cc
@@ -81,88 +75,53 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 # Test suites.
 
-token_test.o: token_test.cc token.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c token_test.cc
-
-token_test: token_test.o token.o gtest_main.a
+token_test: token_test.cc token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-keyword_token_test.o: keyword_token_test.cc keyword_token.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c keyword_token_test.cc
-
-keyword_token_test: keyword_token_test.o keyword_token.o token.o gtest_main.a
+keyword_token_test: keyword_token_test.cc keyword_token.o token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-punctuation_token_test.o: punctuation_token_test.cc punctuation_token.h \
-			  $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c punctuation_token_test.cc
-
-punctuation_token_test: punctuation_token_test.o punctuation_token.o token.o \
+punctuation_token_test: punctuation_token_test.cc punctuation_token.o token.o \
 			gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-rel_operator_token_test.o: rel_operator_token_test.cc rel_operator_token.h \
-			   $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c \
-	rel_operator_token_test.cc
-
-rel_operator_token_test: rel_operator_token_test.o rel_operator_token.o \
+rel_operator_token_test: rel_operator_token_test.cc rel_operator_token.o \
 			 token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-add_operator_token_test.o: add_operator_token_test.cc add_operator_token.h \
-			   $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c \
-	add_operator_token_test.cc
-
-add_operator_token_test: add_operator_token_test.o add_operator_token.o token.o \
+add_operator_token_test: add_operator_token_test.cc add_operator_token.o token.o \
 			 gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-mul_operator_token_test.o: mul_operator_token_test.cc mul_operator_token.h \
-			   $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c \
-	mul_operator_token_test.cc
-
-mul_operator_token_test: mul_operator_token_test.o mul_operator_token.o \
+mul_operator_token_test: mul_operator_token_test.cc mul_operator_token.o \
 			 token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-identifier_token_test.o: identifier_token_test.cc identifier_token.h \
-			 $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c identifier_token_test.cc
-
-identifier_token_test: identifier_token_test.o identifier_token.o token.o \
+identifier_token_test: identifier_token_test.cc identifier_token.o token.o \
 		       gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-number_token_test.o: number_token_test.cc number_token.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c number_token_test.cc
-
-number_token_test: number_token_test.o number_token.o token.o gtest_main.a
+number_token_test: number_token_test.cc number_token.o token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-eof_token_test.o: eof_token_test.cc eof_token.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c eof_token_test.cc
-
-eof_token_test: eof_token_test.o eof_token.o token.o gtest_main.a
+eof_token_test: eof_token_test.cc eof_token.o token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-testsuites = token_test keyword_token_test punctuation_token_test \
+TESTSUITES = token_test keyword_token_test punctuation_token_test \
 	    rel_operator_token_test add_operator_token_test \
 	    mul_operator_token_test identifier_token_test \
 	    number_token_test eof_token_test
 
-test:   $(testsuites)
+test:   $(TESTSUITES)
 
 clean:
-	rm *.o *.a $(testsuites)
+	rm -r *.o *.a *.dSYM $(TESTSUITES)
