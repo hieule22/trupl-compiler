@@ -85,13 +85,15 @@ token_test.o: token_test.cc token.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c token_test.cc
 
 token_test: token_test.o token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 keyword_token_test.o: keyword_token_test.cc keyword_token.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c keyword_token_test.cc
 
 keyword_token_test: keyword_token_test.o keyword_token.o token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 punctuation_token_test.o: punctuation_token_test.cc punctuation_token.h \
 			  $(GTEST_HEADERS)
@@ -99,7 +101,8 @@ punctuation_token_test.o: punctuation_token_test.cc punctuation_token.h \
 
 punctuation_token_test: punctuation_token_test.o punctuation_token.o token.o \
 			gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 rel_operator_token_test.o: rel_operator_token_test.cc rel_operator_token.h \
 			   $(GTEST_HEADERS)
@@ -108,7 +111,8 @@ rel_operator_token_test.o: rel_operator_token_test.cc rel_operator_token.h \
 
 rel_operator_token_test: rel_operator_token_test.o rel_operator_token.o \
 			 token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 add_operator_token_test.o: add_operator_token_test.cc add_operator_token.h \
 			   $(GTEST_HEADERS)
@@ -117,7 +121,8 @@ add_operator_token_test.o: add_operator_token_test.cc add_operator_token.h \
 
 add_operator_token_test: add_operator_token_test.o add_operator_token.o token.o \
 			 gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 mul_operator_token_test.o: mul_operator_token_test.cc mul_operator_token.h \
 			   $(GTEST_HEADERS)
@@ -126,7 +131,8 @@ mul_operator_token_test.o: mul_operator_token_test.cc mul_operator_token.h \
 
 mul_operator_token_test: mul_operator_token_test.o mul_operator_token.o \
 			 token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 identifier_token_test.o: identifier_token_test.cc identifier_token.h \
 			 $(GTEST_HEADERS)
@@ -134,29 +140,29 @@ identifier_token_test.o: identifier_token_test.cc identifier_token.h \
 
 identifier_token_test: identifier_token_test.o identifier_token.o token.o \
 		       gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 number_token_test.o: number_token_test.cc number_token.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c number_token_test.cc
 
 number_token_test: number_token_test.o number_token.o token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
 eof_token_test.o: eof_token_test.cc eof_token.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c eof_token_test.cc
 
 eof_token_test: eof_token_test.o eof_token.o token.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
 
-testsuite = token_test keyword_token_test punctuation_token_test \
+testsuites = token_test keyword_token_test punctuation_token_test \
 	    rel_operator_token_test add_operator_token_test \
 	    mul_operator_token_test identifier_token_test \
 	    number_token_test eof_token_test
-test:   $(testsuite)
-	./token_test && ./keyword_token_test && ./punctuation_token_test && \
-	./rel_operator_token_test && ./add_operator_token_test && \
-	./mul_operator_token_test && ./identifier_token_test && \
-	./number_token_test && ./eof_token_test
+
+test:   $(testsuites)
 
 clean:
-	rm *.o *.a $(testsuite)
+	rm *.o *.a $(testsuites)
