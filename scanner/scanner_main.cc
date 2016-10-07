@@ -7,11 +7,15 @@
 #include <iostream>
 
 #include "scanner/scanner.h"
+#include "util/text_colorizer.h"
 
 int main(int argc, char** argv) {
   char *filename;
   if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <input file name>" << std::endl;
+    std::cerr <<
+        truplc::TextColorizer(truplc::TextColor::FG_RED) <<
+        "Usage: " << argv[0] << " <input file name>" <<
+        truplc::TextColorizer(truplc::TextColor::FG_DEFAULT) << std::endl;
     exit(EXIT_FAILURE);
   }
 
@@ -24,7 +28,10 @@ int main(int argc, char** argv) {
   do {
     token = scanner.NextToken();
     if (token->GetTokenType() == truplc::TokenType::kUnspecified) {
-      std::cerr << "Error: NextToken() returned typeless token." << std::endl;
+      std::cerr <<
+          truplc::TextColorizer(truplc::TextColor::FG_RED) <<
+          "Error: NextToken() returned typeless token." <<
+          truplc::TextColorizer(truplc::TextColor::FG_DEFAULT) << std::endl;
     } else {
       std::cout << token->DebugString() << std::endl;
     }

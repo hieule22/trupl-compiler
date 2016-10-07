@@ -4,7 +4,10 @@ cc_library(
   name = "buffer",
   hdrs = ["buffer.h"],
   srcs = ["buffer.cc"],
-  deps = ["//util:container_util"],
+  deps = [
+       "//util:container_util",
+       "//util:text_colorizer"
+  ],
 )
 
 cc_test(
@@ -113,5 +116,8 @@ cc_test(
 cc_binary(
   name = "scanner_main",
   srcs = ["scanner_main.cc"],
-  deps = [":scanner"],
+  deps = [
+       ":scanner",
+       "//util:text_colorizer",
+  ],
 )
