@@ -4,6 +4,19 @@ ROOTDIR = ..
 SRCDIR = $(ROOTDIR)/tokens
 CXXFLAGS += -g -std=c++14 -Wall -Wextra --pedantic
 
+# Components of the library.
+token_objects = token.o keyword_token.o punctuation_token.o \
+		rel_operator_token.o add_operator_token.o \
+		mul_operator_token.o identifier_token.o \
+		number_token.o eof_token.o
+
+token_headers = token.h keyword_token.h punctuation_token.h \
+		rel_operator_token.h add_operator_token.h \
+		mul_operator_token.h identifier_token.h \
+		number_token.h eof_token.h
+
+all:	$(token_objects)
+
 token.o: token.h token.cc
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c token.cc
 
@@ -31,7 +44,7 @@ number_token.o: number_token.h number_token.cc token.h
 eof_token.o: eof_token.h eof_token.cc token.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c eof_token.cc
 
-################################################################################
+# GoogleTest setup.
 
 GTEST_DIR = ../third_party/gtest
 
@@ -66,7 +79,7 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-################################################################################
+# Test suites.
 
 token_test.o: token_test.cc token.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c token_test.cc
@@ -135,16 +148,15 @@ eof_token_test.o: eof_token_test.cc eof_token.h $(GTEST_HEADERS)
 eof_token_test: eof_token_test.o eof_token.o token.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@
 
-all:	token.o keyword_token.o punctuation_token.o rel_operator_token.o \
-	add_operator_token.o mul_operator_token.o identifier_token.o \
-	number_token.o eof_token.o \
-	token_test keyword_token_test punctuation_token_test \
-	rel_operator_token_test add_operator_token_test \
-	mul_operator_token_test identifier_token_test \
-	number_token_test eof_token_test
+testsuite = token_test keyword_token_test punctuation_token_test \
+	    rel_operator_token_test add_operator_token_test \
+	    mul_operator_token_test identifier_token_test \
+	    number_token_test eof_token_test
+test:   $(testsuite)
+	./token_test && ./keyword_token_test && ./punctuation_token_test && \
+	./rel_operator_token_test && ./add_operator_token_test && \
+	./mul_operator_token_test && ./identifier_token_test && \
+	./number_token_test && ./eof_token_test
 
 clean:
-	rm *.o *.a token_test keyword_token_test punctuation_token_test \
-	rel_operator_token_test add_operator_token_test \
-	mul_operator_token_test identifier_token_test \
-	number_token_test eof_token_test
+	rm *.o *.a $(testsuite)
