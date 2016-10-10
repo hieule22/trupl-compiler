@@ -11,7 +11,8 @@ TOKEN_SOURCES = $(ROOTDIR)/tokens/*token.cc
 
 all: buffer.o stream_buffer.o file_buffer.o scanner.o
 
-buffer.o: buffer.h buffer.cc $(ROOTDIR)/util/container_util.h
+buffer.o: buffer.h buffer.cc $(ROOTDIR)/util/container_util.h \
+	  $(ROOTDIR)/util/text_colorizer.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c buffer.cc
 
 stream_buffer.o: stream_buffer.h stream_buffer.cc buffer.h
@@ -21,7 +22,7 @@ file_buffer.o: file_buffer.h file_buffer.cc buffer.h stream_buffer.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c file_buffer.cc
 
 scanner.o: scanner.h scanner.cc $(BUFFER_HEADERS) $(TOKEN_HEADERS) \
-	   $(ROOTDIR)/util/container_util.h
+	   $(ROOTDIR)/util/container_util.h $(ROOTDIR)/util/text_colorizer.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c scanner.cc
 
 scanner_main: scanner_main.cc scanner.o $(BUFFER_OBJECTS) $(TOKEN_SOURCES)
@@ -66,21 +67,23 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 TESTSUITES = buffer_test stream_buffer_test file_buffer_test scanner_test
 
-buffer_test: buffer_test.cc buffer.o gtest_main.a
+buffer_test: buffer_test.cc buffer.o gtest_main.a \
+	     $(ROOTDIR)/util/text_colorizer.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
 stream_buffer_test: stream_buffer_test.cc stream_buffer.o buffer.o \
-		    gtest_main.a
+		    $(ROOTDIR)/util/text_colorizer.cc gtest_main.a 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-file_buffer_test: file_buffer_test.cc $(BUFFER_OBJECTS) gtest_main.a
+file_buffer_test: file_buffer_test.cc $(BUFFER_OBJECTS) \
+		  $(ROOTDIR)/util/text_colorizer.cc gtest_main.a 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
 scanner_test: scanner_test.cc scanner.o $(BUFFER_OBJECTS) \
-	      $(TOKEN_SOURCES) gtest_main.a
+	      $(TOKEN_SOURCES) $(ROOTDIR)/util/text_colorizer.cc gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
