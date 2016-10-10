@@ -1,11 +1,16 @@
 # Makefile for building utility classes.
 
 ROOTDIR = ..
-CXXFLAGS += -g -std=c++14 -Wall -Wextra --pedantic
+CXXFLAGS += -g -std=c++14 -Wall -Wextra --pedantic -pthread
+
+all: text_colorizer.o
+
+text_colorizer.o: text_colorizer.h text_colorizer.cc
+	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c text_colorizer.cc
 
 # GoogleTest setup.
 
-GTEST_DIR = ../third_party/gtest
+GTEST_DIR = $(ROOTDIR)/third_party/gtest
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -pthread
@@ -40,16 +45,17 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 # Test suites.
 
-testsuites = container_util_test
+TESTSUITES = container_util_test text_colorizer_test
 
-container_util_test.o: container_util_test.cc container_util.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -c container_util_test.cc
-
-container_util_test: container_util_test.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+container_util_test: container_util_test.cc gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
 	&& ./$@
 
-test: $(testsuites)
+text_colorizer_test: text_colorizer_test.cc text_colorizer.o gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
+	&& ./$@
+
+test: $(TESTSUITES)
 
 clean:
-	rm *.o *.a $(testsuites)
+	rm -rf *.o *.a *.dSYM $(TESTSUITES)
