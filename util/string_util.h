@@ -1,0 +1,20 @@
+// Utility functions to manipulate strings.
+// Copyright 2016 Hieu Le.
+
+#ifndef TRUPLC_UTIL_STRING_UTIL_H__
+#define TRUPLC_UTIL_STRING_UTIL_H__
+
+#include <string>
+
+namespace truplc {
+
+// Returns the concatenation of two strings.
+std::string StrCat(const std::string& s0, const std::string& s1);
+
+// Returns the concatenation of three strings.
+std::string StrCat(const std::string& s0, const std::string& s1,
+                   const std::string& s2);
+
+}  // namespace truplc
+
+#endif  // #ifndef TRUPLC_UTIL_STRING_UTIL_H__

@@ -3,10 +3,13 @@
 ROOTDIR = ..
 CXXFLAGS += -g -std=c++14 -Wall -Wextra --pedantic -pthread
 
-all: text_colorizer.o
+all: text_colorizer.o string_util.o
 
 text_colorizer.o: text_colorizer.h text_colorizer.cc
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c text_colorizer.cc
+
+string_util.o: string_util.h string_util.cc
+	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c string_util.cc
 
 # GoogleTest setup.
 
@@ -45,13 +48,17 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 # Test suites.
 
-TESTSUITES = container_util_test text_colorizer_test
+TESTSUITES = container_util_test text_colorizer_test string_util_test
 
 container_util_test: container_util_test.cc gtest_main.a
 	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
 	&& ./$@
 
 text_colorizer_test: text_colorizer_test.cc text_colorizer.o gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
+	&& ./$@
+
+string_util_test: string_util_test.cc string_util.o gtest_main.a
 	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
 	&& ./$@
 
