@@ -8,6 +8,7 @@
 
 namespace truplc {
 
+// Color options to prettify output to UNIX terminal.
 enum class TextColor : int {
     FG_RED     = 31,
     FG_GREEN   = 32,
@@ -21,20 +22,26 @@ enum class TextColor : int {
 
 class TextColorizer {
  public:
+  // Default immutable instances for text colorization.
   static const TextColorizer kFGRedColorizer;
   static const TextColorizer kFGGreenColorizer;
   static const TextColorizer kFGBlueColorizer;
   static const TextColorizer kFGDefaultColorizer;
 
+  // Constructs a colorizer from given text color.
   explicit TextColorizer(TextColor color);
+
+  // Returns the text color associated with this instance.
   TextColor GetColor() const;
 
  private:
+  // The text color associated with this instance.
   const TextColor color_;
 };
 
 }  // namespace truplc
 
+// Override << operator to print output in color.
 std::ostream& operator<<(std::ostream& os,
                          const truplc::TextColorizer& colorizer);
 

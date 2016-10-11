@@ -10,7 +10,6 @@ const TextColorizer TextColorizer::kFGGreenColorizer(TextColor::FG_GREEN);
 const TextColorizer TextColorizer::kFGBlueColorizer(TextColor::FG_BLUE);
 const TextColorizer TextColorizer::kFGDefaultColorizer(TextColor::FG_DEFAULT);
 
-
 TextColorizer::TextColorizer(const TextColor color) : color_(color) {}
 
 TextColor TextColorizer::GetColor() const {
