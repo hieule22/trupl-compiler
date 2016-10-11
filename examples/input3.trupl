@@ -9,9 +9,10 @@ loop	begin end
 1234 a < 2
 end
 
+# Hello world
 # THIS IS SOME COMMENT ### COMMMENT
 
-ABC = 1
+ABC = 1 # The scanner should crash here.
 
 
 
