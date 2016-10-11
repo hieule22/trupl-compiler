@@ -16,85 +16,86 @@ namespace {
 
 // Set of states for the deterministic finite automata that recognizes all
 // the valid lexemes of TruPL.
+enum class State : int {
+  START        = 0,
+  DONE         = 999,
+  IDENTIFIER   = 1,
+  NUMBER       = 2,
+  END_OF_FILE  = 3,
 
-const int START        = 0;
-const int DONE         = 999;
-const int IDENTIFIER   = 1;
-const int NUMBER       = 2;
-const int END_OF_FILE  = 3;
+  A            = 4,
+  AN           = 5,
+  AND          = 6,
+  B            = 7,
+  BE           = 8,
+  BEG          = 9,
+  BEGI         = 10,
+  BEGIN        = 11,
+  BO           = 12,
+  BOO          = 13,
+  BOOL         = 14,
+  E            = 15,
+  EL           = 16,
+  ELS          = 17,
+  ELSE         = 18,
+  EN           = 19,
+  END          = 20,
+  I            = 21,
+  IF           = 22,
+  IN           = 23,
+  INT          = 24,
+  L            = 25,
+  LO           = 26,
+  LOO          = 27,
+  LOOP         = 28,
+  N            = 29,
+  NO           = 30,
+  NOT          = 31,
+  O            = 32,
+  OR           = 33,
+  P            = 34,
+  PR           = 35,
+  PRI          = 36,
+  PRIN         = 37,
+  PRINT        = 38,
+  PRO          = 39,
+  PROC         = 40,
+  PROCE        = 41,
+  PROCED       = 42,
+  PROCEDU      = 43,
+  PROCEDUR     = 44,
+  PROCEDURE    = 45,
+  PROG         = 46,
+  PROGR        = 47,
+  PROGRA       = 48,
+  PROGRAM      = 49,
+  T            = 50,
+  TH           = 51,
+  THE          = 52,
+  THEN         = 53,
+  W            = 54,
+  WH           = 55,
+  WHI          = 56,
+  WHIL         = 57,
+  WHILE        = 58,
 
-const int A            = 4;
-const int AN           = 5;
-const int AND          = 6;
-const int B            = 7;
-const int BE           = 8;
-const int BEG          = 9;
-const int BEGI         = 10;
-const int BEGIN        = 11;
-const int BO           = 12;
-const int BOO          = 13;
-const int BOOL         = 14;
-const int E            = 15;
-const int EL           = 16;
-const int ELS          = 17;
-const int ELSE         = 18;
-const int EN           = 19;
-const int END          = 20;
-const int I            = 21;
-const int IF           = 22;
-const int IN           = 23;
-const int INT          = 24;
-const int L            = 25;
-const int LO           = 26;
-const int LOO          = 27;
-const int LOOP         = 28;
-const int N            = 29;
-const int NO           = 30;
-const int NOT          = 31;
-const int O            = 32;
-const int OR           = 33;
-const int P            = 34;
-const int PR           = 35;
-const int PRI          = 36;
-const int PRIN         = 37;
-const int PRINT        = 38;
-const int PRO          = 39;
-const int PROC         = 40;
-const int PROCE        = 41;
-const int PROCED       = 42;
-const int PROCEDU      = 43;
-const int PROCEDUR     = 44;
-const int PROCEDURE    = 45;
-const int PROG         = 46;
-const int PROGR        = 47;
-const int PROGRA       = 48;
-const int PROGRAM      = 49;
-const int T            = 50;
-const int TH           = 51;
-const int THE          = 52;
-const int THEN         = 53;
-const int W            = 54;
-const int WH           = 55;
-const int WHI          = 56;
-const int WHIL         = 57;
-const int WHILE        = 58;
-
-const int SEMICOLON    = 59;
-const int COLON        = 60;
-const int COMMA        = 61;
-const int OPENBRACKET  = 62;
-const int CLOSEBRACKET = 63;
-const int EQUAL        = 64;
-const int LESS         = 65;
-const int LESSEQUAL    = 66;
-const int NOTEQUAL     = 67;
-const int GREATER      = 68;
-const int GREATEREQUAL = 69;
-const int ADD          = 70;
-const int SUBTRACT     = 71;
-const int MULTIPLY     = 72;
-const int DIVIDE       = 73;
-const int ASSIGN       = 74;
+  SEMICOLON    = 59,
+  COLON        = 60,
+  COMMA        = 61,
+  OPENBRACKET  = 62,
+  CLOSEBRACKET = 63,
+  EQUAL        = 64,
+  LESS         = 65,
+  LESSEQUAL    = 66,
+  NOTEQUAL     = 67,
+  GREATER      = 68,
+  GREATEREQUAL = 69,
+  ADD          = 70,
+  SUBTRACT     = 71,
+  MULTIPLY     = 72,
+  DIVIDE       = 73,
+  ASSIGN       = 74,
+};
 
 // Checks if a given character represents a lowercase letter.
 bool IsAlpha(const char c) {
@@ -130,92 +131,90 @@ void Scanner::ScannerFatalError(const std::string& message) const {
 }
 
 std::unique_ptr<Token> Scanner::NextToken() {
-  int state = START;
+  State state = State::START;
   std::string attribute;
   Token* token = NULL;
 
-  while (state != DONE) {
+  while (state != State::DONE) {
     // Always read a char from buffer before each transition.
     char c = buffer_->NextChar();
-    // std::cerr << "State: " << state << std::endl;
-    // std::cerr << "Symbol: " << c << std::endl;
 
     switch (state) {
-      case START:
+      case State::START:
         if (IsAlpha(c) && !Contain<std::vector<int>, int>( {
               'a', 'b', 'e', 'i', 'l', 'n', 'o', 'p', 't', 'w'}, c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else if (c == 'a') {
-          state = A;
+          state = State::A;
           attribute.push_back(c);
         } else if (c == 'b') {
-          state = B;
+          state = State::B;
           attribute.push_back(c);
         } else if (c == 'e') {
-          state = E;
+          state = State::E;
           attribute.push_back(c);
         } else if (c == 'i') {
-          state = I;
+          state = State::I;
           attribute.push_back(c);
         } else if (c == 'l') {
-          state = L;
+          state = State::L;
           attribute.push_back(c);
         } else if (c == 'n') {
-          state = N;
+          state = State::N;
           attribute.push_back(c);
         } else if (c == 'o') {
-          state = O;
+          state = State::O;
           attribute.push_back(c);
         } else if (c == 'p') {
-          state = P;
+          state = State::P;
           attribute.push_back(c);
         } else if (c == 't') {
-          state = T;
+          state = State::T;
           attribute.push_back(c);
         } else if (c == 'w') {
-          state = W;
+          state = State::W;
           attribute.push_back(c);
         } else if (c == ';') {
-          state = SEMICOLON;
+          state = State::SEMICOLON;
         } else if (c == ':') {
-          state = COLON;
+          state = State::COLON;
         } else if (c == ',') {
-          state = COMMA;
+          state = State::COMMA;
         } else if (c == '(') {
-          state = OPENBRACKET;
+          state = State::OPENBRACKET;
         } else if (c == ')') {
-          state = CLOSEBRACKET;
+          state = State::CLOSEBRACKET;
         } else if (c == '=') {
-          state = EQUAL;
+          state = State::EQUAL;
         } else if (c == '<') {
-          state = LESS;
+          state = State::LESS;
         } else if (c == '>') {
-          state = GREATER;
+          state = State::GREATER;
         } else if (c == '+') {
-          state = ADD;
+          state = State::ADD;
         } else if (c == '-') {
-          state = SUBTRACT;
+          state = State::SUBTRACT;
         } else if (c == '*') {
-          state = MULTIPLY;
+          state = State::MULTIPLY;
         } else if (c == '/') {
-          state = DIVIDE;
+          state = State::DIVIDE;
         } else if (IsDigit(c)) {
-          state = NUMBER;
+          state = State::NUMBER;
           attribute.push_back(c);
         } else if (c == kEOFMarker) {
-          state = END_OF_FILE;
+          state = State::END_OF_FILE;
         } else {
           ScannerFatalError(std::string("Illegal character: ") + c);
         }
         break;
 
-      case IDENTIFIER:
+      case State::IDENTIFIER:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -223,15 +222,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case A:
+      case State::A:
         if (c == 'n') {
-          state = AN;
+          state = State::AN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -239,15 +238,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case AN:
+      case State::AN:
         if (c == 'd') {
-          state = AND;
+          state = State::AND;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -255,12 +254,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case AND:
+      case State::AND:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new MulOperatorToken(MulOperatorAttribute::kAnd);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -268,18 +267,18 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case B:
+      case State::B:
         if (c == 'e') {
-          state = BE;
+          state = State::BE;
           attribute.push_back(c);
         } else if (c == 'o') {
-          state = BO;
+          state = State::BO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -287,15 +286,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BE:
+      case State::BE:
         if (c == 'g') {
-          state = BEG;
+          state = State::BEG;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -303,15 +302,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BEG:
+      case State::BEG:
         if (c == 'i') {
-          state = BEGI;
+          state = State::BEGI;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -319,15 +318,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BEGI:
+      case State::BEGI:
         if (c == 'n') {
-          state = BEGIN;
+          state = State::BEGIN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -335,12 +334,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BEGIN:
+      case State::BEGIN:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kBegin);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -348,15 +347,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BO:
+      case State::BO:
         if (c == 'o') {
-          state = BOO;
+          state = State::BOO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -364,15 +363,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BOO:
+      case State::BOO:
         if (c == 'l') {
-          state = BOOL;
+          state = State::BOOL;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -380,12 +379,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case BOOL:
+      case State::BOOL:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kBool);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -393,18 +392,18 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case E:
+      case State::E:
         if (c == 'l') {
-          state = EL;
+          state = State::EL;
           attribute.push_back(c);
         } else if (c == 'n') {
-          state = EN;
+          state = State::EN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -412,15 +411,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case EL:
+      case State::EL:
         if (c == 's') {
-          state = ELS;
+          state = State::ELS;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -428,15 +427,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case ELS:
+      case State::ELS:
         if (c == 'e') {
-          state = ELSE;
+          state = State::ELSE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -444,12 +443,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case ELSE:
+      case State::ELSE:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kElse);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -457,15 +456,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case EN:
+      case State::EN:
         if (c == 'd') {
-          state = END;
+          state = State::END;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -473,12 +472,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case END:
+      case State::END:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kEnd);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -486,18 +485,18 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case I:
+      case State::I:
         if (c == 'f') {
-          state = IF;
+          state = State::IF;
           attribute.push_back(c);
         } else if (c == 'n') {
-          state = IN;
+          state = State::IN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -505,12 +504,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case IF:
+      case State::IF:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kIf);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -518,15 +517,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case IN:
+      case State::IN:
         if (c == 't') {
-          state = INT;
+          state = State::INT;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -534,12 +533,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case INT:
+      case State::INT:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kInt);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -547,15 +546,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case L:
+      case State::L:
         if (c == 'o') {
-          state = LO;
+          state = State::LO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -563,15 +562,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case LO:
+      case State::LO:
         if (c == 'o') {
-          state = LOO;
+          state = State::LOO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -579,15 +578,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case LOO:
+      case State::LOO:
         if (c == 'p') {
-          state = LOOP;
+          state = State::LOOP;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -595,12 +594,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case LOOP:
+      case State::LOOP:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kLoop);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -608,15 +607,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case N:
+      case State::N:
         if (c == 'o') {
-          state = NO;
+          state = State::NO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -624,15 +623,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case NO:
+      case State::NO:
         if (c == 't') {
-          state = NOT;
+          state = State::NOT;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -640,12 +639,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case NOT:
+      case State::NOT:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kNot);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -653,15 +652,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case O:
+      case State::O:
         if (c == 'r') {
-          state = OR;
+          state = State::OR;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -669,12 +668,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case OR:
+      case State::OR:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new AddOperatorToken(AddOperatorAttribute::kOr);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -682,15 +681,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case P:
+      case State::P:
         if (c == 'r') {
-          state = PR;
+          state = State::PR;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -698,18 +697,18 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PR:
+      case State::PR:
         if (c == 'i') {
-          state = PRI;
+          state = State::PRI;
           attribute.push_back(c);
         } else if (c == 'o') {
-          state = PRO;
+          state = State::PRO;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -717,15 +716,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PRI:
+      case State::PRI:
         if (c == 'n') {
-          state = PRIN;
+          state = State::PRIN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -733,15 +732,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PRIN:
+      case State::PRIN:
         if (c == 't') {
-          state = PRINT;
+          state = State::PRINT;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -749,12 +748,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PRINT:
+      case State::PRINT:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kPrint);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -762,18 +761,18 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PRO:
+      case State::PRO:
         if (c == 'c') {
-          state = PROC;
+          state = State::PROC;
           attribute.push_back(c);
         } else if (c == 'g') {
-          state = PROG;
+          state = State::PROG;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -781,15 +780,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROC:
+      case State::PROC:
         if (c == 'e') {
-          state = PROCE;
+          state = State::PROCE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -797,15 +796,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROCE:
+      case State::PROCE:
         if (c == 'd') {
-          state = PROCED;
+          state = State::PROCED;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -813,15 +812,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROCED:
+      case State::PROCED:
         if (c == 'u') {
-          state = PROCEDU;
+          state = State::PROCEDU;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -829,15 +828,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROCEDU:
+      case State::PROCEDU:
         if (c == 'r') {
-          state = PROCEDUR;
+          state = State::PROCEDUR;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -845,15 +844,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROCEDUR:
+      case State::PROCEDUR:
         if (c == 'e') {
-          state = PROCEDURE;
+          state = State::PROCEDURE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -861,12 +860,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROCEDURE:
+      case State::PROCEDURE:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kProcedure);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -874,15 +873,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROG:
+      case State::PROG:
         if (c == 'r') {
-          state = PROGR;
+          state = State::PROGR;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -890,15 +889,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROGR:
+      case State::PROGR:
         if (c == 'a') {
-          state = PROGRA;
+          state = State::PROGRA;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -906,15 +905,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROGRA:
+      case State::PROGRA:
         if (c == 'm') {
-          state = PROGRAM;
+          state = State::PROGRAM;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -922,12 +921,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case PROGRAM:
+      case State::PROGRAM:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kProgram);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -935,15 +934,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case T:
+      case State::T:
         if (c == 'h') {
-          state = TH;
+          state = State::TH;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -951,15 +950,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case TH:
+      case State::TH:
         if (c == 'e') {
-          state = THE;
+          state = State::THE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -967,15 +966,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case THE:
+      case State::THE:
         if (c == 'n') {
-          state = THEN;
+          state = State::THEN;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -983,12 +982,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case THEN:
+      case State::THEN:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kThen);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -996,15 +995,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case W:
+      case State::W:
         if (c == 'h') {
-          state = WH;
+          state = State::WH;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1012,15 +1011,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case WH:
+      case State::WH:
         if (c == 'i') {
-          state = WHI;
+          state = State::WHI;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1028,15 +1027,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case WHI:
+      case State::WHI:
         if (c == 'l') {
-          state = WHIL;
+          state = State::WHIL;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1044,15 +1043,15 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case WHIL:
+      case State::WHIL:
         if (c == 'e') {
-          state = WHILE;
+          state = State::WHILE;
           attribute.push_back(c);
         } else if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new IdentifierToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1060,12 +1059,12 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case WHILE:
+      case State::WHILE:
         if (IsAlphanumeric(c)) {
-          state = IDENTIFIER;
+          state = State::IDENTIFIER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new KeywordToken(KeywordAttribute::kWhile);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1073,19 +1072,19 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case SEMICOLON:
-        state = DONE;
+      case State::SEMICOLON:
+        state = State::DONE;
         token = new PunctuationToken(PunctuationAttribute::kSemicolon);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case COLON:
+      case State::COLON:
         if (c == '=') {
-          state = ASSIGN;
+          state = State::ASSIGN;
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new PunctuationToken(PunctuationAttribute::kColon);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1093,53 +1092,53 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case ASSIGN:
-        state = DONE;
+      case State::ASSIGN:
+        state = State::DONE;
         token = new PunctuationToken(PunctuationAttribute::kAssignment);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case COMMA:
-        state = DONE;
+      case State::COMMA:
+        state = State::DONE;
         token = new PunctuationToken(PunctuationAttribute::kComma);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case OPENBRACKET:
-        state = DONE;
+      case State::OPENBRACKET:
+        state = State::DONE;
         token = new PunctuationToken(PunctuationAttribute::kOpenBracket);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case CLOSEBRACKET:
-        state = DONE;
+      case State::CLOSEBRACKET:
+        state = State::DONE;
         token = new PunctuationToken(PunctuationAttribute::kCloseBracket);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case EQUAL:
-        state = DONE;
+      case State::EQUAL:
+        state = State::DONE;
         token = new RelOperatorToken(RelOperatorAttribute::kEqual);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case LESS:
+      case State::LESS:
         if (c == '=') {
-          state = LESSEQUAL;
+          state = State::LESSEQUAL;
         } else if (c == '>') {
-          state = NOTEQUAL;
+          state = State::NOTEQUAL;
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new RelOperatorToken(RelOperatorAttribute::kLessThan);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1147,27 +1146,27 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case LESSEQUAL:
-        state = DONE;
+      case State::LESSEQUAL:
+        state = State::DONE;
         token = new RelOperatorToken(RelOperatorAttribute::kLessOrEqual);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case NOTEQUAL:
-        state = DONE;
+      case State::NOTEQUAL:
+        state = State::DONE;
         token = new RelOperatorToken(RelOperatorAttribute::kNotEqual);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case GREATER:
+      case State::GREATER:
         if (c == '=') {
-          state = GREATEREQUAL;
+          state = State::GREATEREQUAL;
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new RelOperatorToken(RelOperatorAttribute::kGreaterThan);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1175,52 +1174,52 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case GREATEREQUAL:
-        state = DONE;
+      case State::GREATEREQUAL:
+        state = State::DONE;
         token = new RelOperatorToken(RelOperatorAttribute::kGreaterOrEqual);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case ADD:
-        state = DONE;
+      case State::ADD:
+        state = State::DONE;
         token = new AddOperatorToken(AddOperatorAttribute::kAdd);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case SUBTRACT:
-        state = DONE;
+      case State::SUBTRACT:
+        state = State::DONE;
         token = new AddOperatorToken(AddOperatorAttribute::kSubtract);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case MULTIPLY:
-        state = DONE;
+      case State::MULTIPLY:
+        state = State::DONE;
         token = new MulOperatorToken(MulOperatorAttribute::kMultiply);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case DIVIDE:
-        state = DONE;
+      case State::DIVIDE:
+        state = State::DONE;
         token = new MulOperatorToken(MulOperatorAttribute::kDivide);
         if (!IsSpace(c)) {
           buffer_->UnreadChar(c);
         }
         break;
 
-      case NUMBER:
+      case State::NUMBER:
         if (IsDigit(c)) {
-          state = NUMBER;
+          state = State::NUMBER;
           attribute.push_back(c);
         } else {
-          state = DONE;
+          state = State::DONE;
           token = new NumberToken(attribute);
           if (!IsSpace(c)) {
             buffer_->UnreadChar(c);
@@ -1228,8 +1227,8 @@ std::unique_ptr<Token> Scanner::NextToken() {
         }
         break;
 
-      case END_OF_FILE:
-        state = DONE;
+      case State::END_OF_FILE:
+        state = State::DONE;
         token = new EOFToken();
         break;
 
