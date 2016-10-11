@@ -13,18 +13,11 @@ const TextColorizer TextColorizer::kFGDefaultColorizer(TextColor::FG_DEFAULT);
 std::ostream& TextColorizer::Print(std::ostream& os,
                                    const TextColorizer& colorizer,
                                    const std::string& output) {
-  return os << colorizer << output << kFGDefaultColorizer;
+  return os << "\033[" << static_cast<int>(colorizer.color_) << "m"
+            << output << "\033["
+            << static_cast<int>(kFGDefaultColorizer.color_) << "m";
 }
 
 TextColorizer::TextColorizer(const TextColor color) : color_(color) {}
 
-TextColor TextColorizer::GetColor() const {
-  return color_;
-}
-
 }  // namespace truplc
-
-std::ostream& operator<<(std::ostream& os,
-                         const truplc::TextColorizer& colorizer) {
-  return os << "\033[" << static_cast<int>(colorizer.GetColor()) << "m";
-}
