@@ -9,7 +9,7 @@ BUFFER_HEADERS = buffer.h stream_buffer.h file_buffer.h
 TOKEN_HEADERS = $(ROOTDIR)/tokens/*.h
 TOKEN_SOURCES = $(ROOTDIR)/tokens/*token.cc
 
-all: buffer.o stream_buffer.o file_buffer.o scanner.o
+all: buffer.o stream_buffer.o file_buffer.o scanner.o scanner_main
 
 buffer.o: buffer.h buffer.cc $(ROOTDIR)/util/container_util.h \
 	  $(ROOTDIR)/util/text_colorizer.h
@@ -25,7 +25,8 @@ scanner.o: scanner.h scanner.cc $(BUFFER_HEADERS) $(TOKEN_HEADERS) \
 	   $(ROOTDIR)/util/container_util.h $(ROOTDIR)/util/text_colorizer.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c scanner.cc
 
-scanner_main: scanner_main.cc scanner.o $(BUFFER_OBJECTS) $(TOKEN_SOURCES)
+scanner_main: scanner_main.cc scanner.o $(BUFFER_OBJECTS) $(TOKEN_SOURCES) \
+	      $(ROOTDIR)/util/text_colorizer.cc
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) $^ -o $@
 
 # GoogleTest setup.
