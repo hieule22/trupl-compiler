@@ -30,8 +30,8 @@ class TextColorizer {
   static const TextColorizer kFGDefaultColorizer;
 
   // Prints output to targeted stream using the specified colorizer.
-  static std::ostream& Print(std::ostream& os, const std::string& output,
-                             const TextColorizer& colorizer);
+  static std::ostream& Print(std::ostream& os, const TextColorizer& colorizer,
+                             const std::string& output);
 
   // Constructs a colorizer from given text color.
   explicit TextColorizer(TextColor color);

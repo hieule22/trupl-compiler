@@ -10,8 +10,9 @@ const TextColorizer TextColorizer::kFGGreenColorizer(TextColor::FG_GREEN);
 const TextColorizer TextColorizer::kFGBlueColorizer(TextColor::FG_BLUE);
 const TextColorizer TextColorizer::kFGDefaultColorizer(TextColor::FG_DEFAULT);
 
-std::ostream& TextColorizer::Print(std::ostream& os, const std::string& output,
-                                   const TextColorizer& colorizer) {
+std::ostream& TextColorizer::Print(std::ostream& os,
+                                   const TextColorizer& colorizer,
+                                   const std::string& output) {
   return os << colorizer << output << kFGDefaultColorizer;
 }
 
