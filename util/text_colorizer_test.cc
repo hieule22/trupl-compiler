@@ -18,5 +18,13 @@ TEST(TextColorizer, GetColor) {
   std::cout << colorizer << "Hello world" << undoer << std::endl;
 }
 
+TEST(TextColorizer, Constants) {
+  EXPECT_EQ(TextColorizer::kFGRedColorizer.GetColor(), TextColor::FG_RED);
+  EXPECT_EQ(TextColorizer::kFGGreenColorizer.GetColor(), TextColor::FG_GREEN);
+  EXPECT_EQ(TextColorizer::kFGBlueColorizer.GetColor(), TextColor::FG_BLUE);
+  EXPECT_EQ(TextColorizer::kFGDefaultColorizer.GetColor(),
+            TextColor::FG_DEFAULT);
+}
+
 }  // namespace
 }  // namespace truplc

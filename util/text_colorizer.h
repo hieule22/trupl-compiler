@@ -21,7 +21,12 @@ enum class TextColor : int {
 
 class TextColorizer {
  public:
-  explicit TextColorizer(TextColor);
+  static const TextColorizer kFGRedColorizer;
+  static const TextColorizer kFGGreenColorizer;
+  static const TextColorizer kFGBlueColorizer;
+  static const TextColorizer kFGDefaultColorizer;
+
+  explicit TextColorizer(TextColor color);
   TextColor GetColor() const;
 
  private:
