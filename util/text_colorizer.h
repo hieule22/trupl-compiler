@@ -5,6 +5,7 @@
 #define TRUPLC_UTIL_TEXT_COLORIZER_H__
 
 #include <ostream>
+#include <string>
 
 namespace truplc {
 
@@ -27,6 +28,10 @@ class TextColorizer {
   static const TextColorizer kFGGreenColorizer;
   static const TextColorizer kFGBlueColorizer;
   static const TextColorizer kFGDefaultColorizer;
+
+  // Prints output to targeted stream using the specified colorizer.
+  static std::ostream& Print(std::ostream& os, const std::string& output,
+                             const TextColorizer& colorizer);
 
   // Constructs a colorizer from given text color.
   explicit TextColorizer(TextColor color);
