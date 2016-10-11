@@ -12,3 +12,6 @@ bazel-trupl-compiler
 *.o
 *.a
 *.out
+
+# OS generated files.
+.DS_STORE
