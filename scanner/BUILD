@@ -118,6 +118,7 @@ cc_binary(
   srcs = ["scanner_main.cc"],
   deps = [
        ":scanner",
+       "//util:string_util",
        "//util:text_colorizer",
   ],
 )

@@ -26,7 +26,7 @@ scanner.o: scanner.h scanner.cc $(BUFFER_HEADERS) $(TOKEN_HEADERS) \
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c scanner.cc
 
 scanner_main: scanner_main.cc scanner.o $(BUFFER_OBJECTS) $(TOKEN_SOURCES) \
-	      $(ROOTDIR)/util/text_colorizer.cc
+	      $(ROOTDIR)/util/text_colorizer.cc $(ROOTDIR)/util/string_util.cc
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) $^ -o $@
 
 # GoogleTest setup.
