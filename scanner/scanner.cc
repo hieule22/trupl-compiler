@@ -10,6 +10,8 @@
 
 #include "scanner/file_buffer.h"
 #include "util/container_util.h"
+#include "util/string_util.h"
+#include "util/text_colorizer.h"
 
 namespace truplc {
 namespace {
@@ -126,7 +128,9 @@ Scanner::Scanner(std::unique_ptr<Buffer> buffer)
     : buffer_(std::move(buffer)) {}
 
 void Scanner::ScannerFatalError(const std::string& message) const {
-  std::cerr << "Exiting on Scanner Fatal Error: " << message << std::endl;
+  TextColorizer::Print(std::cerr, TextColorizer::kFGRedColorizer,
+                       StrCat("Exiting on Scanner Fatal Error: ",
+                              message, "\n"));
   exit(EXIT_FAILURE);
 }
 

@@ -9,17 +9,14 @@
 #include <iostream>
 
 #include "util/container_util.h"
+#include "util/string_util.h"
 #include "util/text_colorizer.h"
 
 namespace truplc {
 
 void Buffer::BufferFatalError(const std::string& message) const {
-  TextColorizer red_colorizer(TextColor::FG_RED);
-  TextColorizer default_colorizer(TextColor::FG_DEFAULT);
-  std::cerr << red_colorizer;
-  std::cerr << message << std::endl;
-  std::cerr << "EXITING on BUFFER FATAL ERROR" << std::endl;
-  std::cerr << default_colorizer;
+  TextColorizer::Print(std::cerr, TextColorizer::kFGRedColorizer,
+                       StrCat(message, "\nEXITING on BUFFER FATAL ERROR\n"));
   exit(EXIT_FAILURE);
 }
 

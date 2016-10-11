@@ -6,6 +6,7 @@ cc_library(
   srcs = ["buffer.cc"],
   deps = [
        "//util:container_util",
+       "//util:string_util",
        "//util:text_colorizer"
   ],
 )
@@ -97,6 +98,8 @@ cc_library(
        "//tokens:identifier_token",
        "//tokens:eof_token",
        "//util:container_util",
+       "//util:string_util",
+       "//util:text_colorizer",
   ],
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
