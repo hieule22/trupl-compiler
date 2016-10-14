@@ -116,6 +116,19 @@ cc_test(
   copts = ["-std=c++14"],
 )
 
+cc_test(
+  name = "lexical_analyzer_test",
+  srcs = ["lexical_analyzer_test.cc"],
+  size = "small",
+  deps = [
+       ":scanner",
+       ":stream_buffer",
+       ":test_utils",
+       "//third_party/gtest:gtest_main",
+  ],
+  copts = ["-std=c++14"],
+)
+
 cc_binary(
   name = "scanner_main",
   srcs = ["scanner_main.cc"],

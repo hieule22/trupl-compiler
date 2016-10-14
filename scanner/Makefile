@@ -68,7 +68,8 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 # Test suites:
 
-TESTSUITES = buffer_test stream_buffer_test file_buffer_test scanner_test
+TESTSUITES = buffer_test stream_buffer_test file_buffer_test scanner_test \
+	     lexical_analyzer_test
 
 buffer_test: buffer_test.cc buffer.o gtest_main.a \
 	     $(ROOTDIR)/util/text_colorizer.cc $(ROOTDIR)/util/string_util.cc
@@ -90,6 +91,12 @@ file_buffer_test: file_buffer_test.cc $(BUFFER_OBJECTS) \
 scanner_test: scanner_test.cc scanner.o $(BUFFER_OBJECTS) \
 	      $(TOKEN_SOURCES) $(ROOTDIR)/util/text_colorizer.cc \
 	      $(ROOTDIR)/util/string_util.cc gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+lexical_analyzer_test: lexical_analyzer_test.cc scanner.o $(BUFFER_OBJECTS) \
+		       $(TOKEN_SOURCES) $(ROOTDIR)/util/text_colorizer.cc \
+		       $(ROOTDIR)/util/string_util.cc gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
