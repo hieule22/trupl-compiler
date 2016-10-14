@@ -1,4 +1,4 @@
-// The lexical analyzer for the TruPL compiler.
+// The direct-coded lexical analyzer for the TruPL compiler.
 // Copyright 2016 Hieu Le.
 
 #ifndef TRUPLC_SCANNER_SCANNER_H__
