@@ -209,7 +209,7 @@ std::unique_ptr<Token> Scanner::NextToken() {
         } else if (c == kEOFMarker) {
           state = State::END_OF_FILE;
         } else {
-          ScannerFatalError(std::string("Illegal character: ") + c);
+          ScannerFatalError(StrCat("Illegal character: ", std::string(1, c)));
         }
         break;
 
