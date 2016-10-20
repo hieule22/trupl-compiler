@@ -1,0 +1,95 @@
+# Makefile for all test units.
+
+ROOTDIR = ..
+
+# GoogleTest setup.
+
+GTEST_DIR = $(ROOTDIR)/third_party/gtest
+
+CPPFLAGS += -isystem $(GTEST_DIR)/include
+CXXFLAGS += -g -Wall -Wextra -pthread
+
+# All Google Test headers.
+GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
+                $(GTEST_DIR)/include/gtest/internal/*.h
+
+# Builds gtest.a and gtest_main.a.
+
+# Usually you shouldn't tweak such internal variables, indicated by a
+# trailing _.
+GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
+
+# For simplicity and to avoid depending on Google Test's
+# implementation details, the dependencies specified below are
+# conservative and not optimized.  This is fine as Google Test
+# compiles fast and for ordinary users its source rarely changes.
+gtest-all.o : $(GTEST_SRCS_)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+            $(GTEST_DIR)/src/gtest-all.cc
+
+gtest_main.o : $(GTEST_SRCS_)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+            $(GTEST_DIR)/src/gtest_main.cc
+
+gtest.a : gtest-all.o
+	$(AR) $(ARFLAGS) $@ $^
+
+gtest_main.a : gtest-all.o gtest_main.o
+	$(AR) $(ARFLAGS) $@ $^
+
+# Test targets.
+
+CXXFLAGS += -std=c++14 --pedantic
+
+TOKEN_SRCS = $(ROOTDIR)/tokens/*.cc
+
+TOKEN_TESTS = token_test keyword_token_test punctuation_token_test \
+	      rel_operator_token_test add_operator_token_test \
+	      mul_operator_token_test identifier_token_test \
+	      number_token_test eof_token_test
+
+token_test: tokens/token_test.cc $(TOKEN_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+keyword_token_test: tokens/keyword_token_test.cc $(TOKEN_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+punctuation_token_test: tokens/punctuation_token_test.cc $(TOKEN_SRCS) \
+		        gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+rel_operator_token_test: tokens/rel_operator_token_test.cc $(TOKEN_SRCS) \
+			 gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+add_operator_token_test: tokens/add_operator_token_test.cc $(TOKEN_SRCS) \
+		         gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+mul_operator_token_test: tokens/mul_operator_token_test.cc $(TOKEN_SRCS) \
+			 gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+identifier_token_test: tokens/identifier_token_test.cc $(TOKEN_SRCS) \
+		       gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+number_token_test: tokens/number_token_test.cc $(TOKEN_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+eof_token_test: tokens/eof_token_test.cc $(TOKEN_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+test:	$(TOKEN_TESTS)
+
+clean:
+	rm -r *.o *.a *.dSYM $(TOKEN_TESTS)
