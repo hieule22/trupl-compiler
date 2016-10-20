@@ -24,10 +24,12 @@ class LexicalAnalyzerTest : public testing::Test {
 
   // Tests if the tokens from an input stream as read by the scanner
   // matches a list of expected tokens.
-  void MatchTokens(const std::string& input, const std::vector<Token*>& token) {
+  void MatchTokens(const std::string& input,
+                   const std::vector<Token*>& tokens) {
     Scanner scanner(CreateBuffer(input));
-    for (const auto& expected : token) {
+    for (const auto& token : tokens) {
       std::unique_ptr<Token> actual(scanner.NextToken());
+      std::unique_ptr<Token> expected(token);
       EXPECT_EQ(actual->DebugString(), expected->DebugString());
     }
   }
@@ -36,7 +38,6 @@ class LexicalAnalyzerTest : public testing::Test {
   std::unique_ptr<std::istringstream> ss;
 };
 
-// TODO(hieule22): Fix memory leaks.
 TEST_F(LexicalAnalyzerTest, Basic) {
   MatchTokens("int a = 1;", { new INT, new IDENTIFIER("a"), new EQUAL,
           new NUMBER("1"), new SEMICOLON, new ENDOFFILE });
