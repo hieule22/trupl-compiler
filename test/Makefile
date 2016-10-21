@@ -41,6 +41,26 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 CXXFLAGS += -std=c++14 --pedantic
 
+# Utility library tests.
+
+UTIL_SRCS = $(ROOTDIR)/util/*.cc
+
+UTIL_TESTS = container_util_test text_colorizer_test string_util_test
+
+container_util_test: util/container_util_test.cc $(UTIL_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
+	&& ./$@
+
+text_colorizer_test: util/text_colorizer_test.cc $(UTIL_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
+	&& ./$@
+
+string_util_test: util/string_util_test.cc $(UTIL_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) -I$(ROOTDIR) $(CXXFLAGS) -lpthread $^ -o $@ \
+	&& ./$@
+
+# Token library tests.
+
 TOKEN_SRCS = $(ROOTDIR)/tokens/*.cc
 
 TOKEN_TESTS = token_test keyword_token_test punctuation_token_test \
@@ -89,7 +109,9 @@ eof_token_test: tokens/eof_token_test.cc $(TOKEN_SRCS) gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-SCANNER_SRCS = $(TOKEN_SRCS) $(ROOTDIR)/util/*.cc \
+# Lexical analyzer tests.
+
+SCANNER_SRCS = $(TOKEN_SRCS) $(UTIL_SRCS) \
 	       $(ROOTDIR)/scanner/scanner.cc $(ROOTDIR)/scanner/buffer.cc \
 	       $(ROOTDIR)/scanner/stream_buffer.cc \
 	       $(ROOTDIR)/scanner/file_buffer.cc
@@ -118,7 +140,7 @@ lexical_analyzer_test: scanner/lexical_analyzer_test.cc $(SCANNER_SRCS) \
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-test:	$(TOKEN_TESTS) $(SCANNER_TESTS)
+test:	$(UTIL_TESTS) $(TOKEN_TESTS) $(SCANNER_TESTS)
 
 clean:
-	rm -r *.o *.a *.dSYM $(TOKEN_TESTS) $(SCANNER_TESTS)
+	rm -r *.o *.a *.dSYM $(UTIL_TESTS) $(TOKEN_TESTS) $(SCANNER_TESTS)
