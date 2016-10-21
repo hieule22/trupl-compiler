@@ -111,10 +111,7 @@ eof_token_test: tokens/eof_token_test.cc $(TOKEN_SRCS) gtest_main.a
 
 # Lexical analyzer tests.
 
-SCANNER_SRCS = $(TOKEN_SRCS) $(UTIL_SRCS) \
-	       $(ROOTDIR)/scanner/scanner.cc $(ROOTDIR)/scanner/buffer.cc \
-	       $(ROOTDIR)/scanner/stream_buffer.cc \
-	       $(ROOTDIR)/scanner/file_buffer.cc
+SCANNER_SRCS = $(TOKEN_SRCS) $(UTIL_SRCS) $(ROOTDIR)/scanner/*.cc
 
 SCANNER_TESTS = buffer_test stream_buffer_test file_buffer_test scanner_test \
 	        lexical_analyzer_test
