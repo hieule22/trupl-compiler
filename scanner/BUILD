@@ -55,13 +55,3 @@ cc_library(
   ],
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
-
-cc_binary(
-  name = "scanner_main",
-  srcs = ["scanner_main.cc"],
-  deps = [
-       ":scanner",
-       "//util:string_util",
-       "//util:text_colorizer",
-  ],
-)

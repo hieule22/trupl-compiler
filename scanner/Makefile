@@ -7,9 +7,8 @@ BUFFER_OBJECTS = buffer.o stream_buffer.o file_buffer.o
 BUFFER_HEADERS = buffer.h stream_buffer.h file_buffer.h
 
 TOKEN_HEADERS = $(ROOTDIR)/tokens/*.h
-TOKEN_SOURCES = $(ROOTDIR)/tokens/*token.cc
 
-all: buffer.o stream_buffer.o file_buffer.o scanner.o scanner_main
+all: buffer.o stream_buffer.o file_buffer.o scanner.o
 
 buffer.o: buffer.h buffer.cc $(ROOTDIR)/util/container_util.h \
 	  $(ROOTDIR)/util/text_colorizer.h $(ROOTDIR)/util/string_util.h
@@ -26,10 +25,6 @@ scanner.o: scanner.h scanner.cc $(BUFFER_HEADERS) $(TOKEN_HEADERS) \
 	   $(ROOTDIR)/util/string_util.h \
 	   $(ROOTDIR)/util/text_colorizer.h
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c scanner.cc
-
-scanner_main: scanner_main.cc scanner.o $(BUFFER_OBJECTS) $(TOKEN_SOURCES) \
-	      $(ROOTDIR)/util/text_colorizer.cc $(ROOTDIR)/util/string_util.cc
-	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) $^ -o $@
 
 clean:
 	rm -r *.o
