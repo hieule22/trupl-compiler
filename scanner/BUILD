@@ -9,17 +9,7 @@ cc_library(
        "//util:string_util",
        "//util:text_colorizer"
   ],
-)
-
-cc_test(
-  name = "buffer_test",
-  srcs = ["buffer_test.cc"],
-  size = "small",
-  deps = [
-       ":buffer",
-       "//third_party/gtest:gtest_main",
-  ],
-  copts = ["-std=c++14",  "-Wall", "--pedantic"],
+  copts = ["-std=c++14", "-Wall", "--pedantic"]
 )
 
 cc_library(
@@ -32,17 +22,6 @@ cc_library(
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
 )
 
-cc_test(
-  name = "stream_buffer_test",
-  srcs = ["stream_buffer_test.cc"],
-  size = "small",
-  deps = [
-       ":stream_buffer",
-       "//third_party/gtest:gtest_main",
-  ],
-  copts = ["-std=c++14"],
-)
-
 cc_library(
   name = "file_buffer",
   srcs = ["file_buffer.cc"],
@@ -52,33 +31,6 @@ cc_library(
        ":stream_buffer",
   ],
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
-)
-
-cc_test(
-  name = "file_buffer_test",
-  srcs = ["file_buffer_test.cc"],
-  size = "small",
-  deps = [
-       ":file_buffer",
-       "//third_party/gtest:gtest_main",
-  ],
-  copts = ["-std=c++14"],
-)
-
-cc_library(
-  name = "test_utils",
-  hdrs = ["test_utils.h"],
-  deps = [
-       "//tokens:token",
-       "//tokens:keyword_token",
-       "//tokens:punctuation_token",
-       "//tokens:rel_operator_token",
-       "//tokens:add_operator_token",
-       "//tokens:mul_operator_token",
-       "//tokens:number_token",
-       "//tokens:identifier_token",
-       "//tokens:eof_token",
-   ],
 )
 
 cc_library(
@@ -102,31 +54,6 @@ cc_library(
        "//util:text_colorizer",
   ],
   copts = ["-std=c++14",  "-Wall", "--pedantic"],
-)
-
-cc_test(
-  name = "scanner_test",
-  srcs = ["scanner_test.cc"],
-  size = "small",
-  deps = [
-       ":scanner",
-       ":test_utils",
-        "//third_party/gtest:gtest_main",
-  ],
-  copts = ["-std=c++14"],
-)
-
-cc_test(
-  name = "lexical_analyzer_test",
-  srcs = ["lexical_analyzer_test.cc"],
-  size = "small",
-  deps = [
-       ":scanner",
-       ":stream_buffer",
-       ":test_utils",
-       "//third_party/gtest:gtest_main",
-  ],
-  copts = ["-std=c++14"],
 )
 
 cc_binary(

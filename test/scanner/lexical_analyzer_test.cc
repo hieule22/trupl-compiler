@@ -7,7 +7,7 @@
 
 #include "scanner/scanner.h"
 #include "scanner/stream_buffer.h"
-#include "scanner/test_utils.h"
+#include "test/scanner/test_utils.h"
 
 #include "gtest/gtest.h"
 

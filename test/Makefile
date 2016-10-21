@@ -89,7 +89,36 @@ eof_token_test: tokens/eof_token_test.cc $(TOKEN_SRCS) gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
 	&& ./$@
 
-test:	$(TOKEN_TESTS)
+SCANNER_SRCS = $(TOKEN_SRCS) $(ROOTDIR)/util/*.cc \
+	       $(ROOTDIR)/scanner/scanner.cc $(ROOTDIR)/scanner/buffer.cc \
+	       $(ROOTDIR)/scanner/stream_buffer.cc \
+	       $(ROOTDIR)/scanner/file_buffer.cc
+
+SCANNER_TESTS = buffer_test stream_buffer_test file_buffer_test scanner_test \
+	        lexical_analyzer_test
+
+buffer_test: scanner/buffer_test.cc $(SCANNER_SRCS) gtest_main.a 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+stream_buffer_test: scanner/stream_buffer_test.cc $(SCANNER_SRCS) gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+file_buffer_test: scanner/file_buffer_test.cc $(SCANNER_SRCS) gtest_main.a 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+scanner_test: scanner/scanner_test.cc $(SCANNER_SRCS) gtest_main.a 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+lexical_analyzer_test: scanner/lexical_analyzer_test.cc $(SCANNER_SRCS) \
+		       gtest_main.a 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(ROOTDIR) -lpthread $^ -o $@ \
+	&& ./$@
+
+test:	$(TOKEN_TESTS) $(SCANNER_TESTS)
 
 clean:
-	rm -r *.o *.a *.dSYM $(TOKEN_TESTS)
+	rm -r *.o *.a *.dSYM $(TOKEN_TESTS) $(SCANNER_TESTS)

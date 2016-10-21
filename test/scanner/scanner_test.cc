@@ -9,8 +9,9 @@
 #include <utility>
 #include <vector>
 
+#include "test/scanner/test_utils.h"
+
 #include "gtest/gtest.h"
-#include "scanner/test_utils.h"
 
 namespace truplc {
 namespace {
