@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
   name = "symbol_table",
   srcs = ["symbol_table.cc"],
