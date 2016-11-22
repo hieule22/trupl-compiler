@@ -13,5 +13,10 @@ TEST(StrCatTest, Basic) {
   EXPECT_EQ(StrCat("Foo", "Bar", "Quoz"), "FooBarQuoz");
 }
 
+TEST(FormatTest, Basic) {
+  EXPECT_EQ(Format("%d %s", 1, "foo"), "1 foo");
+  EXPECT_EQ(Format("%.1f", 3.1415), "3.1");
+}
+
 }  // namespace
 }  // namespace truplc

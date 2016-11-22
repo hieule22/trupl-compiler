@@ -15,6 +15,9 @@ std::string StrCat(const std::string& s0, const std::string& s1);
 std::string StrCat(const std::string& s0, const std::string& s1,
                    const std::string& s2);
 
+// Returns a string constructed from format specifiers and arguments.
+std::string Format(const std::string fmt, ...);
+
 }  // namespace truplc
 
 #endif  // #ifndef TRUPLC_UTIL_STRING_UTIL_H__
