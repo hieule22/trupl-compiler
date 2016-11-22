@@ -43,11 +43,13 @@ class SymbolTable {
 
   // Returns the type of an identifier from a specified environment. Used to
   // determine if an expression or statement is semantically correct.
+  // Returns garbage type if identifier has not been declared.
   ExpressionType GetType(const std::string& identifier,
                          const std::string& environment) const;
 
   // Returns the type of the formal parameter in the indicated position of a
-  // specified procedure.
+  // specified procedure. Returns garbage type if formal parameter has not
+  // been defined.
   ExpressionType GetType(const std::string& procedure, int position) const;
 
   // Returns a debug-friendly representation of an expression type.
@@ -80,4 +82,3 @@ class SymbolTable {
 }  // namespace truplc
 
 #endif  // TRUPLC_PARSER_SYMBOL_TABLE_H__
-
