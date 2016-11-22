@@ -48,7 +48,7 @@ class SymbolTable {
                          const std::string& environment) const;
 
   // Returns the type of the formal parameter in the indicated position of a
-  // specified procedure. Returns garbage type if formal parameter has not
+  // fully qualified procedure. Returns garbage type if formal parameter has not
   // been defined.
   ExpressionType GetType(const std::string& procedure, int position) const;
 
@@ -61,22 +61,28 @@ class SymbolTable {
  private:
   // Representation of an entry from the symbol table.
   struct Entry {
+    // Constructs a symbol table entry from specified identifier, environment,
+    // position (if any) and datatype.
+    Entry(const std::string& id, const std::string& env,
+          const ExpressionType t, const int pos)
+        : identifier(id), environment(env), type(t), position(pos) {}
+
     // Identifier's name.
-    std::string identifier;
+    const std::string identifier;
     // Environment this identifier is declared in.
-    std::string environment;
-    // Position in formal parameter list if this identifier is a formal
-    // parameter. Undefined otherwise.
-    int position;
+    const std::string environment;
     // Data type of this identifier.
     ExpressionType type;
+    // Position in formal parameter list if this identifier is a formal
+    // parameter. Undefined otherwise.
+    const int position;
   };
 
   // Returns the content of a single entry in debug-friendly format.
   std::string DumpEntry(const Entry& entry) const;
 
   // Container of entries from the symbol table.
-  std::vector<Entry> table;
+  std::vector<Entry> table_;
 };
 
 }  // namespace truplc

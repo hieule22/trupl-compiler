@@ -3,56 +3,110 @@
 
 #include "parser/symbol_table.h"
 
+#include "util/string_util.h"
+
 namespace truplc {
 
 void SymbolTable::Install(const std::string& identifier,
                           const std::string& environment,
                           const ExpressionType type) {
-  // TODO(hieule): Unimplemented method.
+  Install(identifier, environment, type, -1);
 }
 
 void SymbolTable::Install(const std::string& identifier,
                           const std::string& environment,
                           const ExpressionType type,
                           const int position) {
-  // TODO(hieule): Unimplemented method.
+  table_.push_back(Entry(identifier, environment, type, position));
 }
 
 void SymbolTable::UpdateType(const ExpressionType type) {
-  // TODO(hieule): Unimplemented method.
+  for (Entry& entry : table_) {
+    if (entry.type == ExpressionType::kUnknown) {
+      entry.type = type;
+    }
+  }
 }
 
 bool SymbolTable::IsDeclared(const std::string& identifier,
                              const std::string& environment) const {
-  // TODO(hieule): Unimplemented method.
+  for (const Entry& entry : table_) {
+    if (entry.identifier == identifier && entry.environment == environment) {
+      return true;
+    }
+  }
   return false;
 }
 
 ExpressionType SymbolTable::GetType(const std::string& identifier,
                                     const std::string& environment) const {
-  // TODO(hieule): Unimplemented method.
+  for (const Entry& entry : table_) {
+    if (entry.identifier == identifier && entry.environment == environment) {
+      return entry.type;
+    }
+  }
   return ExpressionType::kGarbage;
 }
 
 ExpressionType SymbolTable::GetType(const std::string& procedure,
                                     const int position) const {
-  // TODO(hieule): Unimplemented method.
+  for (const Entry& entry : table_) {
+    if (entry.environment == procedure && entry.position == position) {
+      return entry.type;
+    }
+  }
   return ExpressionType::kGarbage;
 }
 
 std::string SymbolTable::DebugString(const ExpressionType type) const {
-  // TODO(hieule): Unimplemented method.
-  return "";
+  std::string debug_str;
+
+  switch (type) {
+    case ExpressionType::kInt:
+      debug_str = "kInt";
+      break;
+
+    case ExpressionType::kBool:
+      debug_str = "kBool";
+      break;
+
+    case ExpressionType::kProgram:
+      debug_str = "kProgram";
+      break;
+
+    case ExpressionType::kProcedure:
+      debug_str = "kProcedure";
+      break;
+
+    case ExpressionType::kUnknown:
+      debug_str = "kUnknown";
+      break;
+
+    case ExpressionType::kNo:
+      debug_str = "kNo";
+      break;
+
+    default:
+      debug_str = "kGarbage";
+      break;
+  }
+
+  return debug_str;;
 }
 
 std::string SymbolTable::Dump() const {
-  // TODO(hieule): Unimplemented method.
-  return "";
+  std::string debug_str = "Content of symbol table:";
+  for (const Entry& entry : table_) {
+    debug_str.push_back('\n');
+    debug_str.append(DumpEntry(entry));
+  }
+  return debug_str;
 }
 
 std::string SymbolTable::DumpEntry(const Entry& entry) const {
-  // TODO(hieule): Unimplemented method.
-  return "";
+  return Format("ID: %s ENV: %s TYPE: %s POS: %d",
+                entry.identifier.c_str(), entry.environment.c_str(),
+                DebugString(entry.type).c_str(), entry.position);
 }
 
 }  // namespace truplc

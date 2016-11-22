@@ -87,5 +87,21 @@ TEST(SymbolTableTest, DebugString) {
   EXPECT_EQ(table.DebugString(ExpressionType::kGarbage), "kGarbage");
 }
 
+TEST(SymbolTableTest, Dump) {
+  SymbolTable table;
+  EXPECT_EQ(table.Dump(), "Content of symbol table:");
+
+  table.Install("bar", "main::foo", ExpressionType::kInt, 1);
+  EXPECT_EQ(table.Dump(),
+            "Content of symbol table:\n"
+            "ID: bar ENV: main::foo TYPE: kInt POS: 1");
+
+  table.Install("quoz", "main", ExpressionType::kBool);
+  EXPECT_EQ(table.Dump(),
+            "Content of symbol table:\n"
+            "ID: bar ENV: main::foo TYPE: kInt POS: 1\n"
+            "ID: quoz ENV: main TYPE: kBool POS: -1");
+}
+
 }  // namespace
 }  // namespace truplc
