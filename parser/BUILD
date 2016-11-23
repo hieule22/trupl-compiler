@@ -7,3 +7,11 @@ cc_library(
   deps = ["//util:string_util"],
   copts = ["-std=c++14", "-Wall", "-Wextra", "--pedantic"],
 )
+
+cc_library(
+  name = "parser",
+  srcs = ["parser.cc"],
+  hdrs = ["parser.h"],
+  deps = ["//scanner:scanner"],
+  copts = ["-std=c++14", "-Wall", "-Wextra", "--pedantic"],
+)
