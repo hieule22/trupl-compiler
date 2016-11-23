@@ -16,7 +16,7 @@ UTIL_HEADERS = util/container_util.h \
 UTIL_SOURCES = util/string_util.cc \
 	       util/text_colorizer.cc
 
-TRUPLC_OBJECTS = scanner.o
+TRUPLC_OBJECTS = scanner.o parser.o
 
 # Lexical analyzer =============================================================
 
@@ -27,6 +27,11 @@ BUFFER_SOURCES = scanner/*buffer.cc
 scanner.o: scanner/scanner.h scanner/scanner.cc \
 	   $(BUFFER_HEADERS) $(TOKEN_HEADERS) $(UTIL_HEADERS)
 	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c scanner/scanner.cc
+
+# Semantic analyzer ============================================================
+
+parser.o: parser/parser.h parser/parser.cc scanner/scanner.h
+	$(CXX) -I$(ROOTDIR) $(CXXFLAGS) -c parser/parser.cc
 
 # Tests ========================================================================
 
