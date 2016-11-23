@@ -8,3 +8,15 @@ cc_test(
   ],
   copts = ["-std=c++14", "-Wall", "-Wextra", "--pedantic"],
 )
+
+cc_test(
+  name = "parser_test",
+  srcs = ["parser_test.cc"],
+  deps = [
+       "//parser:parser",
+       "//scanner:buffer",
+       "//scanner:stream_buffer",
+       "//third_party/gtest:gtest_main",
+  ],
+  copts = ["-std=c++14", "-Wall", "-Wextra", "--pedantic"],
+)

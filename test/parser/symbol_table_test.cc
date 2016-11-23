@@ -1,6 +1,5 @@
 // Unit tests for SymbolTable class.
 // Copyright 2016 Hieu Le.
-// TODO(hieule): Fix failing unit tests.
 
 #include "parser/symbol_table.h"
 
