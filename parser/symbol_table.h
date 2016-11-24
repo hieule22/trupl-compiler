@@ -22,6 +22,9 @@ enum class ExpressionType : int {
     kGarbage   = 6   // Default type.
 };
 
+// Returns a debug-friendly representation of an expression type.
+std::string DebugString(ExpressionType type);
+
 class SymbolTable {
  public:
   // Installs an identifier with specified environment and type.
@@ -51,9 +54,6 @@ class SymbolTable {
   // fully qualified procedure. Returns garbage type if formal parameter has not
   // been defined.
   ExpressionType GetType(const std::string& procedure, int position) const;
-
-  // Returns a debug-friendly representation of an expression type.
-  std::string DebugString(ExpressionType type) const;
 
   // Returns the content of this symbol table in debug-friendly format.
   std::string Dump() const;

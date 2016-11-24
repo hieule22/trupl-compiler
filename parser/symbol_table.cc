@@ -7,6 +7,42 @@
 
 namespace truplc {
 
+std::string DebugString(const ExpressionType type) {
+  std::string debug_str;
+
+  switch (type) {
+    case ExpressionType::kInt:
+      debug_str = "kInt";
+      break;
+
+    case ExpressionType::kBool:
+      debug_str = "kBool";
+      break;
+
+    case ExpressionType::kProgram:
+      debug_str = "kProgram";
+      break;
+
+    case ExpressionType::kProcedure:
+      debug_str = "kProcedure";
+      break;
+
+    case ExpressionType::kUnknown:
+      debug_str = "kUnknown";
+      break;
+
+    case ExpressionType::kNo:
+      debug_str = "kNo";
+      break;
+
+    default:
+      debug_str = "kGarbage";
+      break;
+  }
+
+  return debug_str;;
+}
+
 void SymbolTable::Install(const std::string& identifier,
                           const std::string& environment,
                           const ExpressionType type) {
@@ -56,42 +92,6 @@ ExpressionType SymbolTable::GetType(const std::string& procedure,
     }
   }
   return ExpressionType::kGarbage;
-}
-
-std::string SymbolTable::DebugString(const ExpressionType type) const {
-  std::string debug_str;
-
-  switch (type) {
-    case ExpressionType::kInt:
-      debug_str = "kInt";
-      break;
-
-    case ExpressionType::kBool:
-      debug_str = "kBool";
-      break;
-
-    case ExpressionType::kProgram:
-      debug_str = "kProgram";
-      break;
-
-    case ExpressionType::kProcedure:
-      debug_str = "kProcedure";
-      break;
-
-    case ExpressionType::kUnknown:
-      debug_str = "kUnknown";
-      break;
-
-    case ExpressionType::kNo:
-      debug_str = "kNo";
-      break;
-
-    default:
-      debug_str = "kGarbage";
-      break;
-  }
-
-  return debug_str;;
 }
 
 std::string SymbolTable::Dump() const {

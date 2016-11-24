@@ -8,6 +8,16 @@
 namespace truplc {
 namespace {
 
+TEST(DebugStringTest, Basic) {
+  EXPECT_EQ(DebugString(ExpressionType::kInt), "kInt");
+  EXPECT_EQ(DebugString(ExpressionType::kBool), "kBool");
+  EXPECT_EQ(DebugString(ExpressionType::kProcedure), "kProcedure");
+  EXPECT_EQ(DebugString(ExpressionType::kProgram), "kProgram");
+  EXPECT_EQ(DebugString(ExpressionType::kNo), "kNo");
+  EXPECT_EQ(DebugString(ExpressionType::kUnknown), "kUnknown");
+  EXPECT_EQ(DebugString(ExpressionType::kGarbage), "kGarbage");
+}
+
 TEST(SymbolTableTest, InstallIdentifier) {
   const std::string identifier = "foo";
   const std::string environment = "main";
@@ -73,17 +83,6 @@ TEST(SymbolTableTest, GetFormalParamType) {
 
   EXPECT_EQ(table.GetType(procedure, position), type);
   EXPECT_EQ(table.GetType(procedure, 1), ExpressionType::kGarbage);
-}
-
-TEST(SymbolTableTest, DebugString) {
-  SymbolTable table;
-  EXPECT_EQ(table.DebugString(ExpressionType::kInt), "kInt");
-  EXPECT_EQ(table.DebugString(ExpressionType::kBool), "kBool");
-  EXPECT_EQ(table.DebugString(ExpressionType::kProcedure), "kProcedure");
-  EXPECT_EQ(table.DebugString(ExpressionType::kProgram), "kProgram");
-  EXPECT_EQ(table.DebugString(ExpressionType::kNo), "kNo");
-  EXPECT_EQ(table.DebugString(ExpressionType::kUnknown), "kUnknown");
-  EXPECT_EQ(table.DebugString(ExpressionType::kGarbage), "kGarbage");
 }
 
 TEST(SymbolTableTest, Dump) {
