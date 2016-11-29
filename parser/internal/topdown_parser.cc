@@ -139,7 +139,6 @@ inline bool IsNumber(const Token& token) {
 bool TopdownParser::ParseProgram() {
   // PROGRAM -> program identifier ; DECL_LIST BLOCK ;
   if (IsKeyword(*word_, KeywordAttribute::kProgram)) {
-    LOG("PROGRAM -> program identifier ; DECL_LIST BLOCK ;");
     Advance();
     if (IsIdentifier(*word_)) {
       const std::string& id_name =
@@ -185,14 +184,12 @@ bool TopdownParser::ParseProgram() {
 
 bool TopdownParser::ParseDeclList() {
   /* DECL_LIST -> VARIABLE_DECL_LIST PROCEDURE_DECL_LIST */
-  LOG("DECL_LIST -> VARIABLE_DECL_LIST PROCEDURE_DECL_LIST");
   return ParseVariableDeclList() && ParseProcedureDeclList();
 }
 
 bool TopdownParser::ParseVariableDeclList() {
   /* VARIABLE_DECL_LIST -> VARIABLE_DECL ; VARIABLE_DECL_LIST */
   if (IsIdentifier(*word_)) {
-    LOG("VARIABLE_DECL_LIST -> VARIABLE_DECL ; VARIABLE_DECL_LIST");
     if (ParseVariableDecl()) {
       if (IsPunctuation(*word_, PunctuationAttribute::kSemicolon)) {
         Advance();
@@ -205,7 +202,6 @@ bool TopdownParser::ParseVariableDeclList() {
       return false;
     }
   } else {
-    LOG("VARIABLE_DECL_LIST -> lambda");
     return true;
   }
 
