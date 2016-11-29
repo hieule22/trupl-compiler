@@ -3,20 +3,19 @@
 
 #include "parser/parser.h"
 
+#include <utility>
+
 namespace truplc {
 
-Parser::Parser(std::unique_ptr<Scanner> scanner) {
-  // TODO(hieule): Unimplemented constructor.
-}
+Parser::Parser(std::unique_ptr<Scanner> scanner)
+    : internal_parser_(std::move(scanner)) {}
 
 bool Parser::ParseProgram() {
-  // TODO(hieule): Unimplemented method.
-  return false;
+  return internal_parser_.ParseProgram();
 }
 
 bool Parser::HasNextToken() const {
-  // TODO(hieule): Unimplemented method.
-  return false;
+  return internal_parser_.HasNextToken();
 }
 
 }  // namespace truplc

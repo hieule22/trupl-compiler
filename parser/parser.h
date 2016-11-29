@@ -10,6 +10,7 @@
 
 #include <memory>
 
+#include "parser/internal/topdown_parser.h"
 #include "scanner/scanner.h"
 
 namespace truplc {
@@ -28,6 +29,10 @@ class Parser {
 
   // Checks if all the tokens produced by Scanner have been exhausted.
   bool HasNextToken() const;
+
+ private:
+  // Top-down, recursive-descent parser.
+  internal::TopdownParser internal_parser_;
 };
 
 }  // namespace truplc

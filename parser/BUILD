@@ -12,6 +12,9 @@ cc_library(
   name = "parser",
   srcs = ["parser.cc"],
   hdrs = ["parser.h"],
-  deps = ["//scanner:scanner"],
+  deps = [
+       "//parser/internal:topdown_parser",
+       "//scanner:scanner"
+  ],
   copts = ["-std=c++14", "-Wall", "-Wextra", "--pedantic"],
 )
